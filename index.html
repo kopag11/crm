@@ -3,343 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CRM</title>
+    <title>Kalkulator CRM (V3 Supabase Final)</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary: #3b82f6; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --radius: 16px; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; min-height: 100vh; }
-        .container { max-width: 550px; margin: 0 auto; }
+        :root {
+            --primary: #3b82f6; --primary-dark: #2563eb; --primary-soft: #eff6ff;
+            --bg-color: #f1f5f9; --card-bg: #ffffff; --text-dark: #1e293b;
+            --text-gray: #64748b; --success: #10b981; --success-soft: #d1fae5;
+            --warning: #f59e0b; --warning-soft: #fef3c7; --danger: #ef4444;
+            --danger-soft: #fee2e2; --radius: 16px; --radius-sm: 12px;
+            --shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0; min-height: 100vh; line-height: 1.5; }
+        .container { width: 100%; max-width: 550px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; margin: 0; color: var(--text-dark); }
         
-        #loginScreen { display: block; background: var(--card); padding: 40px 25px; border-radius: var(--radius); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; }
-        .input-pin { font-size: 2rem; width: 100%; text-align: center; letter-spacing: 5px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; margin: 20px 0; background: #f8fafc; text-transform: uppercase; }
-        .btn-main { background: #3b82f6; color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 600; width: 100%; font-size: 1rem; cursor: pointer; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
+        /* OVERLAY LOADING & EXIT */
+        #qrOverlay, #exitScreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: white; }
+        #exitScreen { background: #f1f5f9; }
+        .pulse-icon { font-size: 4rem; margin-bottom: 20px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        
+        /* LOGIN SCREEN */
+        #loginScreen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 25px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 20px; margin-bottom: 20px; }
+        .icon-circle { width: 70px; height: 70px; background: var(--primary-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; color: var(--primary); }
+        .login-note { background: var(--danger-soft); color: #b91c1c; padding: 12px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 8px; }
+        .pin-wrapper input { font-family: 'Poppins', monospace; font-size: 2.2rem; width: 100%; max-width: 280px; text-align: center; letter-spacing: 8px; padding: 15px; border: 2px solid #e2e8f0; border-radius: var(--radius); background: #f8fafc; color: var(--text-dark); outline: none; text-transform: uppercase; }
+        .btn-main { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1rem; width: 100%; cursor: pointer; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25); transition: transform 0.2s; margin-top: 20px; }
         .btn-main:active { transform: scale(0.98); }
         
-        #dashboard { display: none; padding-bottom: 50px; }
-        .header { background: #3b82f6; color: white; padding: 20px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .card { background: white; padding: 20px; border-radius: var(--radius); margin-bottom: 15px; border: 1px solid #e2e8f0; }
-        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; margin-top: 5px; background: #f8fafc; font-size: 1rem; }
+        /* DASHBOARD */
+        #dashboard { display: none; padding-bottom: 60px; }
+        .header-card { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 24px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4); display: flex; justify-content: space-between; align-items: flex-start; }
+        .store-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+        .btn-logout { background: rgba(255,255,255,0.9); color: var(--danger); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; }
         
-        .btn-act { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; color: white; margin-top: 10px; cursor: pointer; }
-        .bg-blue { background: #0ea5e9; } .bg-green { background: #10b981; } .bg-red { background: #ef4444; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
-        #debugLog { display:none; background:#fee2e2; color:#b91c1c; padding:10px; font-size:0.8rem; margin-bottom:10px; border-radius:8px; text-align:left; word-break:break-all;}
+        /* FORM INPUTS */
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 15px; border: 1px solid #f1f5f9; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: flex; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase; }
+        .info-btn { margin-left: 8px; width: 20px; height: 20px; border-radius: 50%; background-color: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        input[type="text"], input[type="date"], input[type="tel"] { width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-size: 1rem; background: #f8fafc; outline: none; }
+        .highlight-card { background: var(--primary-soft); border: 1px solid #bfdbfe; }
+        #total_sales { background: white; border-color: #93c5fd; color: var(--primary-dark); font-weight: 700; font-size: 1.4rem; text-align: center; }
+        .input-with-btn { display: flex; gap: 10px; }
+        .btn-add { background: var(--bg-color); color: var(--primary); border: 1px solid #e2e8f0; width: 55px; border-radius: var(--radius-sm); font-size: 1.5rem; cursor: pointer; }
+        
+        /* SUMMARY */
+        .summary-card { background: #1e293b; color: white; text-align: center; padding: 25px; position: relative; overflow: hidden; border-radius: var(--radius); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; opacity: 0.9; }
+        .status-box { padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .status-ok { background: var(--success); color: white; }
+        .status-plus { background: #3b82f6; color: white; }
+        .status-min { background: var(--danger); color: white; }
+        
+        .btn-action { width: 100%; padding: 18px; border: none; border-radius: var(--radius); font-weight: 700; font-size: 1rem; cursor: pointer; color: white; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-green { background: var(--success); } .btn-yellow { background: var(--warning); color: #78350f; } .btn-blue { background: #0ea5e9; }
+        
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px 25px; border-radius: 24px; width: 85%; max-width: 350px; text-align: center; animation: popUp 0.3s ease; }
+        @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-footer { margin-top: 20px; display: flex; gap: 12px; }
+        .btn-modal-primary { flex: 1; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .btn-modal-cancel { flex: 1; background: transparent; color: var(--text-gray); border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; padding: 14px; }
+        .calc-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .check-tertelan-wrapper { display: inline-flex; align-items: center; margin-left: 8px; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; border: 1px solid #cbd5e1; }
+        
+        /* DEBUG ERROR BOX */
+        #errorBox { display:none; background:#fee2e2; color:#b91c1c; padding:15px; margin-bottom:20px; border-radius:12px; font-size:0.8rem; word-break: break-all; }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
+<div id="qrOverlay">
+    <div class="pulse-icon">⏳</div>
+    <h3>Memverifikasi...</h3>
+</div>
+
+<div id="exitScreen">
+    <div style="font-size: 4rem; margin-bottom: 20px;">👋</div>
+    <h2>Berhasil Keluar</h2>
+    <p>Silakan tutup browser ini.</p>
+    <button onclick="window.close()" style="background:#64748b; color:white; border:none; padding:12px 25px; border-radius:50px; margin-top:20px;">Tutup</button>
+</div>
+
 <div class="container">
-    <div id="debugLog"></div>
+    <div id="errorBox"></div>
 
     <div id="loginScreen">
-        <div style="font-size:3rem; margin-bottom:10px;">⚡</div>
-        <h2>CRM V8</h2>
-        <p style="color:#64748b;">Versi Anti-Stuck</p>
+        <div class="icon-circle">⚡</div>
+        <h2>CRM V3 Final</h2>
+        <p style="color: var(--text-gray);">Supabase Edition</p>
+        <div class="login-note"><span>📍</span> Wajib berada di lokasi toko</div>
         
-        <input type="text" id="inputKode" class="input-pin" placeholder="KODE" maxlength="4">
-        
-        <button id="btnLogin" class="btn-main" onclick="handleLoginClick()">MASUK APLIKASI</button>
-        <p id="msg" style="margin-top:20px; color:#64748b; font-size:0.9rem;">System Ready</p>
+        <div class="pin-wrapper">
+            <input type="text" id="inputKode" maxlength="4" placeholder="KODE" inputmode="text">
+        </div>
+        <button class="btn-main" id="btnLogin" onclick="doLogin()">MASUK SEKARANG</button>
+        <p id="gpsStatus" style="font-size:0.85rem; color:var(--text-gray); margin-top:25px;">System Ready</p>
     </div>
 
     <div id="dashboard">
-        <div class="header">
-            <div>
-                <div style="font-size:0.8rem; opacity:0.8">Halo,</div>
-                <h3 id="dispNama" style="margin:0;">Nama Toko</h3>
-                <span id="dispKode" style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:6px; font-size:0.8rem;">CODE</span>
+        <div class="header-card">
+            <div class="store-info">
+                <span style="font-size:0.8rem; opacity:0.9;">Selamat Datang,</span>
+                <h2 id="displayNama">Nama Toko</h2>
+                <div style="margin-top: 8px;"><span class="store-badge" id="displayKode">CODE</span></div>
             </div>
-            <button onclick="logout()" style="background:white; color:red; border:none; padding:8px 15px; border-radius:20px; font-weight:bold;">Keluar</button>
+            <button class="btn-logout" onclick="logout()">Keluar ➔</button>
         </div>
 
-        <button onclick="hapusDraft()" style="width:100%; padding:10px; border:1px solid #fca5a5; background:#fef2f2; color:#b91c1c; border-radius:12px; margin-bottom:15px;">🗑️ Hapus Draf Cloud</button>
+        <div id="historyList" style="display:none; padding:15px; background:#fffbeb; color:#b45309; border:1px solid #fcd34d; border-radius:12px; margin-bottom:15px; font-size:0.9rem;"></div>
+        <button onclick="confirmDeleteDraft()" style="width:100%; padding:12px; background:white; border:1px solid #fca5a5; color:#ef4444; border-radius:12px; margin-bottom:20px; font-weight:600;">🗑️ Hapus Draf di Cloud</button>
 
-        <div class="card">
-            <label>📅 Tanggal Sales</label><input type="date" id="tgl" onchange="autoSave()">
-            <label style="margin-top:10px; display:block;">📱 No. WA</label><input type="tel" id="wa" placeholder="08xxx" onchange="localStorage.setItem('crm_wa',this.value)">
-        </div>
+        <form id="salesForm" onsubmit="return false;">
+            <input type="hidden" id="formKode"><input type="hidden" id="nama_toko"><input type="hidden" id="info_perangkat">
+            
+            <div class="card">
+                <div class="form-group"><label>📅 Tanggal Sales</label><input type="date" id="tgl" onchange="autoSaveDraft()"></div>
+                <div class="form-group"><label>📱 Nomor WA Anda</label><input type="tel" id="nomor_pengirim" placeholder="08xxxxxxx" onchange="saveSender(this.value)"></div>
+            </div>
 
-        <div class="card" style="background:#eff6ff; border:1px solid #bfdbfe; text-align:center;">
-            <label style="color:#1d4ed8; font-weight:bold;">TOTAL SALES (Rp)</label>
-            <input type="text" id="total_sales" placeholder="0" style="text-align:center; font-size:1.5rem; font-weight:bold;" onkeyup="formatRupiah(this); hitung();">
-        </div>
+            <div class="card highlight-card">
+                <div class="form-group" style="margin:0;">
+                    <label style="color:var(--primary-dark); text-align: center; width: 100%;">💰 TOTAL SALES TUTUPAN (Rp)</label>
+                    <input type="text" inputmode="numeric" id="total_sales" placeholder="0" onkeyup="formatRibuan(this); hitungGlobal();">
+                </div>
+            </div>
 
-        <div id="inputList"></div>
+            <div id="dynamicInputs"></div>
 
-        <div class="card" style="background:#1e293b; color:white; text-align:center;">
-            <div style="display:flex; justify-content:space-between;"><span>Total Fisik</span><b id="txtFisik">0</b></div>
-            <div style="display:flex; justify-content:space-between; margin-top:5px;"><span>Total Potong</span><b id="txtPotong">0</b></div>
-            <hr style="opacity:0.2; margin:15px 0;">
-            <div id="statusBox" style="padding:10px; background:#10b981; border-radius:8px; font-weight:bold;">✅ BALANCE</div>
-        </div>
+            <div class="card summary-card">
+                <div class="summary-row"><span>Total Uang Fisik</span><strong id="disp_total_fisik">Rp 0</strong></div>
+                <div class="summary-row"><span>Total Potongan</span><strong id="disp_total_potong">Rp 0</strong></div>
+                <div style="height:1px; background:rgba(255,255,255,0.2); margin:15px 0;"></div>
+                <div id="disp_balance" class="status-box status-ok">✅ BALANCE</div>
+            </div>
 
-        <input type="hidden" id="nama_toko"><input type="hidden" id="real_kode">
-        <input type="hidden" id="val_fisik" value="0"><input type="hidden" id="val_selisih" value="0">
-        
-        <button id="btnSimpan" class="btn-act bg-blue" onclick="kirimDatabase()">☁️ SIMPAN DATABASE</button>
-        <button class="btn-act bg-green" onclick="kirimWA()">📲 KIRIM WA</button>
-        <p id="dbStatus" style="text-align:center; margin-top:10px; color:gray; font-size:0.9rem;"></p>
+            <input type="hidden" id="h_setor_sore" value="0"><input type="hidden" id="h_setor_malam" value="0">
+            <input type="hidden" id="h_setor_pagi" value="0"><input type="hidden" id="h_ekor_sales" value="0">
+            <input type="hidden" id="h_pot_ba" value="0"><input type="hidden" id="h_pot_lebih" value="0"><input type="hidden" id="h_pot_virtual" value="0">
+            <input type="hidden" id="h_total_fisik" value="0"><input type="hidden" id="val_nama_ekor"><input type="hidden" id="val_selisih" value="0">
+
+            <button class="btn-action btn-blue" id="btn-submit" onclick="processSubmit()">☁️ SIMPAN KE DATABASE</button>
+            <button class="btn-action" style="background:#25D366; color:white;" onclick="kirimWA()">📲 KIRIM KE WHATSAPP</button>
+            <p id="status" style="text-align:center; margin-top:20px; color:gray; font-size:0.9rem;"></p>
+        </form>
     </div>
 </div>
 
-<div id="modalAlert" class="modal"><div class="modal-box"><h3 id="alertTitle">Info</h3><p id="alertMsg"></p><button onclick="document.getElementById('modalAlert').style.display='none'" class="btn-act bg-blue">OK</button></div></div>
+<div id="confirmModal" class="modal"><div class="modal-content"><h3>Konfirmasi</h3><p id="confirmMsg"></p><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeConfirm()">Batal</button><button id="btnConfirmYes" class="btn-modal-primary" onclick="doConfirmYes()">Ya</button></div></div></div>
+<div id="alertModal" class="modal"><div class="modal-content"><h3>Info</h3><p id="alertMsg"></p><button onclick="document.getElementById('alertModal').style.display='none'" class="btn-modal-primary" style="width:100%; margin-top:15px;">OK</button></div></div>
+<div id="calcModal" class="modal"><div class="modal-content"><h3 id="modalTitle">Rincian</h3><div id="calcList" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div><button onclick="addCalcRow()" style="width:100%; padding:10px; margin-bottom:15px;">+ Tambah</button><div style="text-align:right; font-weight:bold;">Total: <span id="modalTotal">0</span></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="document.getElementById('calcModal').style.display='none'">Batal</button><button class="btn-modal-primary" onclick="saveCalculator()">Simpan</button></div></div></div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX8YNW9U6fyuCzBOWB_lcu7FDJS5ivTOI5RU2QBAVQz-sW_ov4ys_CSuqxQNnYDQLT/exec';
+    window.onerror = function(msg, url, line) {
+        document.getElementById('errorBox').style.display = 'block';
+        document.getElementById('errorBox').innerText = "⚠️ SYSTEM ERROR: " + msg;
+    };
+
+
     const SUPABASE_URL = 'https://mpzxceuhnuhuhuveppmh.supabase.co'; 
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wenhjZXVobnVoaHV2dmVwcG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNjQwNDEsImV4cCI6MjA4Mzg0MDA0MX0.sIRvchXgTH9kEMCqhuM2geYohe1TiipYgxz3PQ_y4R0';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX8YNW9U6fyuCzBOWB_lcu7FDJS5ivTOI5RU2QBAVQz-sW_ov4ys_CSuqxQNnYDQLT/exec'; 
     
     let supabase = null;
     let dataStore = {}; 
-    let activeCode = "";
+    let activeField = "";
+    let onConfirmAction = null;
+    let currentStoreCode = "";
+    const MAX_RADIUS = 40;
 
-    window.onerror = function(msg, url, line) {
-        document.getElementById('debugLog').style.display = 'block';
-        document.getElementById('debugLog').innerHTML += `❌ Error: ${msg} (Line ${line})<br>`;
-        document.getElementById('btnLogin').innerText = "Refresh Halaman";
-        document.getElementById('btnLogin').onclick = () => location.reload();
-    };
+    window.addEventListener('load', function() {
+        document.getElementById('tgl').value = getYesterdayDate();
+        let savedNum = localStorage.getItem('crm_sender_phone');
+        if(savedNum) document.getElementById('nomor_pengirim').value = savedNum;
+        getDeviceInfo();
+        
 
-    window.onload = function() {
-        document.getElementById('tgl').value = new Date(new Date()-864e5).toISOString().split('T')[0]; // H-1
-        if(localStorage.getItem('crm_wa')) document.getElementById('wa').value = localStorage.getItem('crm_wa');
-        
-        renderInputs();
-        
-        let sess = localStorage.getItem('crm_sess');
+        const sess = localStorage.getItem('active_session_code');
         if(sess) {
-            let parts = sess.split('|');
-            bukaDashboard(parts[0], parts[1]);
+            let name = localStorage.getItem('shop_cache_' + sess) || "Toko";
+            masukDashboard(sess, sess, name);
         }
-    };
+    });
 
-    function handleLoginClick() {
+
+    function doLogin() {
         let btn = document.getElementById('btnLogin');
-        let msg = document.getElementById('msg');
-        let kode = document.getElementById('inputKode').value.toUpperCase().trim();
+        let stat = document.getElementById('gpsStatus');
+        let k = document.getElementById('inputKode').value.toUpperCase().trim();
 
-        if(!kode) return alert("Masukkan Kode Toko!");
-        
-        if(kode === 'COBA') {
-            bukaDashboard('COBA', 'Toko Uji Coba');
-            return;
-        }
+        if(!k) return alert("Masukkan Kode Toko");
+        if(k === 'COBA') { masukDashboard('COBA', 'COBA', 'Toko Uji Coba'); return; }
 
         btn.disabled = true;
-        btn.innerText = "⏳ Mengecek Server...";
-        msg.innerText = "Sedang menghubungi Google Script...";
+        btn.innerText = "⏳ Mengecek...";
+        stat.innerText = "Menghubungi Server...";
 
-        fetch(SCRIPT_URL + "?action=get_shop_info&kode=" + kode)
-        .then(res => res.json())
-        .then(data => {
-            if(data.error) {
-                alert(data.error);
-                btn.disabled = false;
-                btn.innerText = "MASUK APLIKASI";
-                msg.innerText = "Gagal Login";
+ 
+        let timeout = setTimeout(() => {
+            if(confirm("Server lambat. Masuk paksa mode offline?")) {
+                masukDashboard(k, k, "Mode Offline");
             } else {
-                bukaDashboard(kode, data.nama);
+                resetLoginBtn();
             }
+        }, 5000); 
+
+        fetch(SCRIPT_URL + "?action=get_shop_info&kode=" + k)
+        .then(r => r.json())
+        .then(d => {
+            clearTimeout(timeout);
+            if(d.error) { alert(d.error); resetLoginBtn(); }
+            else { masukDashboard(k, k, d.nama); }
         })
-        .catch(err => {
-            alert("Gagal Koneksi: " + err.message);
-            btn.disabled = false;
-            btn.innerText = "Coba Lagi";
-            msg.innerText = "Error Koneksi";
+        .catch(e => {
+            clearTimeout(timeout);
+            if(confirm("Gagal koneksi. Masuk paksa?")) masukDashboard(k, k, "Mode Offline");
+            else resetLoginBtn();
         });
     }
 
-    function bukaDashboard(kode, nama) {
-        activeCode = kode;
+    function resetLoginBtn() {
+        document.getElementById('btnLogin').disabled = false;
+        document.getElementById('btnLogin').innerText = "MASUK SEKARANG";
+        document.getElementById('gpsStatus').innerText = "System Ready";
+    }
+
+    function masukDashboard(real, disp, name) {
+        currentStoreCode = real;
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('dispKode').innerText = kode;
-        document.getElementById('dispNama').innerText = nama;
-        document.getElementById('nama_toko').value = nama;
-        document.getElementById('real_kode').value = kode;
-        
-        localStorage.setItem('crm_sess', kode + '|' + nama);
-        loadDraft(); 
+        document.getElementById('displayKode').innerText = disp;
+        document.getElementById('displayNama').innerText = name;
+        document.getElementById('nama_toko').value = name;
+        document.getElementById('formKode').value = real;
+        localStorage.setItem('active_session_code', real);
+        localStorage.setItem('shop_cache_' + real, name);
+        initForm();
+        loadDraft();
     }
 
     function logout() {
-        localStorage.removeItem('crm_sess');
-        location.reload();
+        if(confirm("Keluar aplikasi?")) {
+            localStorage.removeItem('active_session_code');
+            location.reload();
+        }
     }
 
-    function renderInputs() {
-        const list = [
-            {id:'setor_sore', l:'☀️ Setor Sore', g:'fisik'},
-            {id:'setor_malam', l:'🌙 Setor Malam', g:'fisik'},
-            {id:'setor_pagi', l:'🌅 Setor Pagi', g:'fisik'},
-            {id:'ekor_sales', l:'🪙 Ekor Sales', g:'fisik', note:true},
-            {id:'pot_ba', l:'⚠️ Potongan BA', g:'potong'},
-            {id:'pot_lebih', l:'➕ Pot. Lebih/Tertelan', g:'potong', check:true},
-            {id:'pot_virtual', l:'💳 Potongan Virtual', g:'potong'}
+
+    function initForm() {
+        const f1 = [
+            {id:'setor_sore', l:'☀️ Setor Sore', d:'Setoran H-1'},
+            {id:'setor_malam', l:'🌙 Setor Malam', d:'21.00-24.00'},
+            {id:'setor_pagi', l:'🌅 Setor Pagi', d:'24.00-Selesai'},
+            {id:'ekor_sales', l:'🪙 Ekor Sales', d:'Transfer', n:true}
+        ];
+        const f2 = [
+            {id:'pot_ba', l:'⚠️ Potongan BA', d:'Varian'},
+            {id:'pot_lebih', l:'➕ Pot. Lebih', d:'Tertelan', c:true},
+            {id:'pot_virtual', l:'💳 Pot. Virtual', d:'Koreksi'}
         ];
 
-        let h = '';
-        list.forEach(i => {
-            if(!dataStore[i.id]) dataStore[i.id] = 0;
-            let extra = i.note ? `<input type="text" id="note_${i.id}" placeholder="Nama Pengirim (Cth: Budi)" style="margin-top:5px; border:1px dashed #cbd5e1;">` : '';
-            let check = i.check ? `<span style="float:right; font-size:0.8rem;"><input type="checkbox" id="check_${i.id}"> Tertelan?</span>` : '';
-            
-            h += `<div class="card" style="padding:15px;">
-                    <label style="font-weight:bold; color:${i.g==='fisik'?'#3b82f6':'#ef4444'}">${i.l} ${check}</label>
-                    <input type="text" id="inp_${i.id}" placeholder="0" onkeyup="formatRupiah(this); hitung();" style="font-weight:bold;">
-                    ${extra}
-                  </div>`;
+        let h = `<div class="card"><h3 style="color:#3b82f6; margin-bottom:10px;">💵 Uang Fisik</h3>`;
+        f1.forEach(x => h += fieldHtml(x));
+        h += `</div><div class="card"><h3 style="color:#ef4444; margin-bottom:10px;">✂️ Potongan</h3>`;
+        f2.forEach(x => h += fieldHtml(x));
+        h += `</div>`;
+        document.getElementById('dynamicInputs').innerHTML = h;
+    }
+
+    function fieldHtml(x) {
+        if(!dataStore[x.id]) dataStore[x.id] = [];
+        let note = x.n ? `<input type="text" id="note_ekor" placeholder="Ket. Ekor (Nama Pengirim)" oninput="document.getElementById('val_nama_ekor').value=this.value; autoSaveDraft();" style="margin-top:10px; border:1px dashed #cbd5e1; width:100%; padding:10px; border-radius:10px;">` : '';
+        let chk = x.c ? `<span style="float:right; font-size:0.8rem"><input type="checkbox" id="check_tertelan"> Tertelan?</span>` : '';
+        
+        return `<div class="form-group">
+            <label>${x.l} ${chk} <span onclick="alert('${x.d}')" style="background:#eff6ff; color:#3b82f6; padding:0 6px; border-radius:50%; cursor:pointer;">i</span></label>
+            <div class="input-with-btn">
+                <input type="text" id="view_${x.id}" value="Rp 0" readonly onclick="openCalc('${x.id}','${x.l}')" style="background:white; cursor:pointer;">
+                <button class="btn-add" onclick="openCalc('${x.id}','${x.l}')">+</button>
+            </div>
+            ${note}
+        </div>`;
+    }
+
+
+    function openCalc(id, t) {
+        activeField = id;
+        document.getElementById('modalTitle').innerText = t;
+        document.getElementById('calcModal').style.display = 'flex';
+        renderRows();
+    }
+    function renderRows() {
+        let c = document.getElementById('calcList'); c.innerHTML = "";
+        (dataStore[activeField]||[0]).forEach((v,i) => {
+            c.innerHTML += `<div class="calc-row"><input class="c-inp" type="tel" value="${v===0?'':v.toLocaleString('id-ID')}" onkeyup="fmt(this); upTotal()" placeholder="0" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px;"><button onclick="delRow(${i})" style="width:40px; background:#fee2e2; color:red; border:none; border-radius:8px;">✕</button></div>`;
         });
-        document.getElementById('inputList').innerHTML = h;
+        upTotal();
+    }
+    function addCalcRow() { saveTmp(); dataStore[activeField].push(0); renderRows(); }
+    function delRow(i) { saveTmp(); dataStore[activeField].splice(i,1); renderRows(); }
+    function saveTmp() { dataStore[activeField] = Array.from(document.querySelectorAll('.c-inp')).map(i => getCleanNumber(i.value)); }
+    function upTotal() { 
+        let t = 0; document.querySelectorAll('.c-inp').forEach(i => t += getCleanNumber(i.value));
+        document.getElementById('modalTotal').innerText = t.toLocaleString('id-ID');
+    }
+    function saveCalculator() {
+        saveTmp();
+        let t = dataStore[activeField].reduce((a,b)=>a+b,0);
+        document.getElementById('view_'+activeField).value = "Rp " + t.toLocaleString('id-ID');
+        document.getElementById('h_'+activeField).value = t;
+        document.getElementById('calcModal').style.display = 'none';
+        hitungGlobal();
     }
 
-
-    function hitung() {
-        let getVal = (id) => Number(document.getElementById(id).value.replace(/\./g,'')) || 0;
-        let totalSales = getVal('total_sales');
+    function hitungGlobal() {
+        let sales = getCleanNumber(document.getElementById('total_sales').value);
+        let fisik = 0; ['setor_sore','setor_malam','setor_pagi','ekor_sales'].forEach(k => fisik += Number(document.getElementById('h_'+k).value)||0);
+        let potong = 0; ['pot_ba','pot_lebih','pot_virtual'].forEach(k => potong += Number(document.getElementById('h_'+k).value)||0);
         
-        let fisik = 0, potong = 0;
-        ['setor_sore','setor_malam','setor_pagi','ekor_sales'].forEach(k => fisik += getVal('inp_'+k));
-        ['pot_ba','pot_lebih','pot_virtual'].forEach(k => potong += getVal('inp_'+k));
+        document.getElementById('disp_total_fisik').innerText = "Rp " + fisik.toLocaleString('id-ID');
+        document.getElementById('disp_total_potong').innerText = "Rp " + potong.toLocaleString('id-ID');
+        document.getElementById('h_total_fisik').value = fisik;
         
-        document.getElementById('txtFisik').innerText = fisik.toLocaleString('id-ID');
-        document.getElementById('txtPotong').innerText = potong.toLocaleString('id-ID');
-        
-        let selisih = (fisik + potong) - totalSales;
+        let selisih = (fisik + potong) - sales;
         document.getElementById('val_selisih').value = selisih;
-        document.getElementById('val_fisik').value = fisik;
-
-        let box = document.getElementById('statusBox');
-        if(totalSales === 0) {
-            box.innerText = "📝 ISI DATA DULU"; box.style.background = "#e2e8f0"; box.style.color = "black";
-        } else if(selisih === 0) {
-            box.innerText = "✅ BALANCE (PAS)"; box.style.background = "#10b981"; box.style.color = "white";
-        } else if(selisih > 0) {
-            box.innerText = "➕ LEBIH Rp " + selisih.toLocaleString('id-ID'); box.style.background = "#3b82f6"; box.style.color = "white";
+        
+        let el = document.getElementById('disp_balance');
+        let btn = document.getElementById('btn-submit');
+        
+        if(selisih === 0) {
+            el.className="status-box status-ok"; el.innerText="✅ BALANCE (PAS)";
+            btn.className="btn-action btn-green"; btn.innerHTML="💾 SIMPAN (BALANCE)";
+        } else if(selisih < 0) {
+            el.className="status-box status-min"; el.innerText="⚠️ KURANG Rp " + Math.abs(selisih).toLocaleString('id-ID');
+            btn.className="btn-action btn-yellow"; btn.innerHTML="⚠️ SIMPAN (MINUS)";
         } else {
-            box.innerText = "⚠️ KURANG Rp " + Math.abs(selisih).toLocaleString('id-ID'); box.style.background = "#ef4444"; box.style.color = "white";
+            el.className="status-box status-plus"; el.innerText="➕ LEBIH Rp " + selisih.toLocaleString('id-ID');
+            btn.className="btn-action btn-blue"; btn.innerHTML="ℹ️ SIMPAN (LEBIH)";
         }
-        autoSave();
+        autoSaveDraft();
     }
 
-    function formatRupiah(e) {
-        let val = e.value.replace(/[^0-9]/g, '');
-        e.value = Number(val).toLocaleString('id-ID');
-        if(e.value === '0') e.value = '';
-    }
+    async function processSubmit() {
+        let btn = document.getElementById('btn-submit');
+        if(!document.getElementById('tgl').value) return alert("Isi Tanggal!");
 
-
-    async function kirimDatabase() {
-        let btn = document.getElementById('btnSimpan');
-        let stat = document.getElementById('dbStatus');
-        
-        if(!document.getElementById('tgl').value) return alert("Pilih Tanggal!");
-        
-        btn.disabled = true; 
-        btn.innerText = "🔄 Menghubungkan...";
+        btn.disabled = true; btn.innerText = "🔄 Menghubungkan DB...";
         
         try {
- 
+
             if(!supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            
             btn.innerText = "🚀 Mengirim Data...";
             
- 
-            let getVal = (id) => Number(document.getElementById('inp_'+id).value.replace(/\./g,'')) || 0;
-            let payload = {
-                kode_toko: activeCode,
+            let data = {
+                kode_toko: currentStoreCode,
                 nama_toko: document.getElementById('nama_toko').value,
                 tgl_sales: document.getElementById('tgl').value,
-                total_sales: Number(document.getElementById('total_sales').value.replace(/\./g,'')) || 0,
-                total_fisik: Number(document.getElementById('val_fisik').value),
-                total_potongan: Number(document.getElementById('txtPotong').innerText.replace(/\./g,'')) || 0,
+                total_sales: getCleanNumber(document.getElementById('total_sales').value),
+                total_fisik: Number(document.getElementById('h_total_fisik').value),
+                total_potongan: Number(document.getElementById('disp_total_potong').innerText.replace(/\D/g,'')),
                 selisih: Number(document.getElementById('val_selisih').value),
-                pengirim: document.getElementById('wa').value
+                pengirim: document.getElementById('nomor_pengirim').value
             };
 
-            await supabase.from('rincian_sales').delete().eq('kode_toko', activeCode).eq('tgl_sales', payload.tgl_sales);
-            
-            const { error } = await supabase.from('laporan_sales').upsert(payload, { onConflict: 'kode_toko, tgl_sales' });
+            await supabase.from('rincian_sales').delete().eq('kode_toko', data.kode_toko).eq('tgl_sales', data.tgl_sales);
+            const { error } = await supabase.from('laporan_sales').upsert(data, { onConflict: 'kode_toko, tgl_sales' });
             if(error) throw error;
 
             let rincian = [];
-            const map = { 'setor_sore':'Setor Sore', 'setor_malam':'Setor Malam', 'setor_pagi':'Setor Pagi', 'ekor_sales':'Ekor Sales', 'pot_ba':'Potongan BA', 'pot_lebih':'Potongan Lebih', 'pot_virtual':'Potongan Virtual' };
+            const map = {'setor_sore':'Setor Sore', 'setor_malam':'Setor Malam', 'setor_pagi':'Setor Pagi', 'ekor_sales':'Ekor Sales', 'pot_ba':'Potongan BA', 'pot_lebih':'Potongan Lebih', 'pot_virtual':'Potongan Virtual'};
             
-            for(let k in map) {
-                let v = getVal(k);
-                if(v > 0) {
-                    let ket = '';
-                    if(k === 'ekor_sales') ket = document.getElementById('note_ekor').value;
-                    if(k === 'pot_lebih' && document.getElementById('check_pot_lebih').checked) ket = "Tertelan";
-                    
-                    rincian.push({
-                        kode_toko: activeCode,
-                        tgl_sales: payload.tgl_sales,
-                        kategori: map[k],
-                        nominal: v,
-                        keterangan: ket,
-                        cek_manual_saldo: null
-                    });
-                }
+            for(let k in dataStore) {
+                (dataStore[k]||[]).forEach(v => {
+                    if(v > 0) {
+                        let ket = '';
+                        if(k==='ekor_sales') ket = document.getElementById('val_nama_ekor').value;
+                        if(k==='pot_lebih' && document.getElementById('check_tertelan').checked) ket = "Tertelan";
+                        rincian.push({
+                            kode_toko: data.kode_toko, tgl_sales: data.tgl_sales,
+                            kategori: map[k], nominal: v, keterangan: ket, cek_manual_saldo: null
+                        });
+                    }
+                });
             }
             if(rincian.length > 0) await supabase.from('rincian_sales').insert(rincian);
 
-            stat.innerText = "✅ Data Terbentuk";
-            btn.innerText = "✅ SUKSES";
-            hapusDraft(true); /
+            alert("✅ Data Tersimpan!");
+
+            const fd = new FormData(); fd.append('action','delete_draft'); fd.append('Kode Toko', currentStoreCode);
+            fetch(SCRIPT_URL, {method:'POST', body:fd, mode:'no-cors'});
             
-            setTimeout(() => { 
-                btn.disabled = false; btn.innerText = "☁️ SIMPAN DATABASE"; 
-                kirimWA();
-            }, 1000);
+            kirimWA();
 
         } catch(e) {
-            console.error(e);
-            alert("Gagal Simpan: " + e.message);
-            btn.disabled = false;
-            btn.innerText = "Coba Lagi";
+            alert("Error: " + e.message);
+            btn.disabled = false; btn.innerText = "Coba Lagi";
         }
     }
 
-   
     function kirimWA() {
         let tgl = document.getElementById('tgl').value.split('-');
         let tglIndo = `${tgl[2]}-${tgl[1]}-${tgl[0]}`;
-        let wa = document.getElementById('wa').value;
+        let wa = document.getElementById('nomor_pengirim').value;
         let selisih = Number(document.getElementById('val_selisih').value);
         let stat = selisih===0 ? "BALANCE OK ✅" : (selisih>0 ? `LEBIH (+) ${selisih.toLocaleString('id-ID')}` : `KURANG (-) ${Math.abs(selisih).toLocaleString('id-ID')}`);
         
-        let txt = `*LAPORAN SETOR SALES*\n*${activeCode} - ${document.getElementById('nama_toko').value}*\nTgl: ${tglIndo}\nTotal Sales: Rp ${document.getElementById('total_sales').value}\n\n*STATUS: ${stat}*\n\nPengirim: ${wa}`;
+        let txt = `*LAPORAN SETOR SALES*\n*${currentStoreCode} - ${document.getElementById('nama_toko').value}*\nTgl: ${tglIndo}\nTotal Sales: Rp ${document.getElementById('total_sales').value}\n\n*STATUS: ${stat}*\n\nPengirim: ${wa}`;
         
- 
-        localStorage.removeItem('crm_sess');
+        localStorage.removeItem('active_session_code');
         window.location.href = "https://wa.me/6285183347653?text=" + encodeURIComponent(txt);
     }
 
-    function autoSave() {
+
+    function getCleanNumber(v) { return Number(v.toString().replace(/\./g,'')) || 0; }
+    function fmt(e) { e.value = getCleanNumber(e.value).toLocaleString('id-ID'); }
+    function getYesterdayDate() { let d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; }
+    function saveSender(v) { localStorage.setItem('crm_sender_phone', v); }
+    function getDeviceInfo() { document.getElementById('info_perangkat').value = navigator.userAgent; }
+
+    function collectDraftData() {
+        return {
+            tgl: document.getElementById('tgl').value,
+            nama_toko: document.getElementById('nama_toko').value,
+            total_sales: document.getElementById('total_sales').value,
+            dataStore: dataStore,
+            ekor_note: document.getElementById('val_nama_ekor').value,
+            h_setor_sore: document.getElementById('h_setor_sore').value,
+            h_setor_malam: document.getElementById('h_setor_malam').value,
+            h_setor_pagi: document.getElementById('h_setor_pagi').value,
+            h_ekor_sales: document.getElementById('h_ekor_sales').value,
+            h_pot_ba: document.getElementById('h_pot_ba').value,
+            h_pot_lebih: document.getElementById('h_pot_lebih').value,
+            h_pot_virtual: document.getElementById('h_pot_virtual').value,
+            is_tertelan: document.getElementById('check_tertelan') ? document.getElementById('check_tertelan').checked : false
+        };
     }
-    
+    function autoSaveDraft() {
+        if (!currentStoreCode) return;
+        const fd = new FormData(); fd.append('action', 'save_draft'); fd.append('Kode Toko', currentStoreCode);
+        fd.append('draft_data', JSON.stringify(collectDraftData()));
+        fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    }
     function loadDraft() {
-        fetch(SCRIPT_URL + "?action=load_draft&kode=" + activeCode)
-        .then(r=>r.json()).then(d=>{
+        document.getElementById('historyList').style.display = 'block';
+        document.getElementById('historyList').innerText = "Cek Draft...";
+        fetch(SCRIPT_URL + "?action=load_draft&kode=" + currentStoreCode)
+        .then(r=>r.json()).then(d => {
             if(d.total_sales) {
-                document.getElementById('total_sales').value = Number(d.total_sales).toLocaleString('id-ID');
-                hitung();
-            }
-        }).catch(e=>console.log("Draft skip"));
+                document.getElementById('total_sales').value = d.total_sales;
+                document.getElementById('val_nama_ekor').value = d.ekor_note||'';
+                if(typeof d.dataStore==='string') try{dataStore=JSON.parse(d.dataStore)}catch(e){dataStore={}} else dataStore=d.dataStore;
+                
+                ['setor_sore','setor_malam','setor_pagi','ekor_sales','pot_ba','pot_lebih','pot_virtual'].forEach(k => {
+                    let v = (dataStore[k]||[]).reduce((a,b)=>a+b,0);
+                    document.getElementById('h_'+k).value = v;
+                    document.getElementById('view_'+k).value = "Rp " + v.toLocaleString('id-ID');
+                });
+                if(d.is_tertelan && document.getElementById('check_tertelan')) document.getElementById('check_tertelan').checked=true;
+                hitungGlobal();
+                document.getElementById('historyList').innerText = "✅ Draft Dipulihkan";
+            } else { document.getElementById('historyList').style.display = 'none'; }
+        }).catch(e => document.getElementById('historyList').style.display = 'none');
     }
-
-    function hapusDraft(silent = false) {
-        if(!silent && !confirm("Hapus draf?")) return;
-        const fd = new FormData(); fd.append('action','delete_draft'); fd.append('Kode Toko', activeCode);
-        fetch(SCRIPT_URL, {method:'POST', body:fd, mode:'no-cors'});
-        if(!silent) location.reload();
+    function confirmDeleteDraft() {
+        if(confirm("Hapus draft?")) {
+            const fd = new FormData(); fd.append('action','delete_draft'); fd.append('Kode Toko', currentStoreCode);
+            fetch(SCRIPT_URL, {method:'POST', body:fd}).then(()=>location.reload());
+        }
     }
+    function closeConfirm() { document.getElementById('confirmModal').style.display='none'; }
+    function doConfirmYes() { if(onConfirmAction) onConfirmAction(); closeConfirm(); }
 </script>
-
 </body>
 </html>
