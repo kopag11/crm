@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS ASLI DARI FILE CRMOS FINAL V3 (TIDAK DIUBAH) */
         :root {
             --primary: #3b82f6; --primary-dark: #2563eb; --primary-soft: #eff6ff;
             --bg-color: #f1f5f9; --card-bg: #ffffff; --text-dark: #1e293b;
@@ -52,10 +51,9 @@
         .pulse-icon { font-size: 4rem; margin-bottom: 20px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* LAYAR LOGIN (DEFAULT FLEX AGAR TIDAK BLANK) */
+        /* Login Screen Default Flex agar muncul */
         #loginScreen {
-            flex: 1; 
-            display: flex; /* Menggunakan flex agar langsung muncul */
+            flex: 1; display: flex; 
             flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 30px 25px; background: var(--card-bg);
             border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 20px; margin-bottom: 20px;
@@ -247,7 +245,33 @@
     <div id="loginScreen">
         <div style="margin-bottom: 20px;">
             <div class="icon-circle">
-                <svg viewBox="0 0 24 24"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"></path></svg>
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                <path style="fill:#F5C86E;" d="M434,230H78c-21.085,0-38.697-14.835-42.991-34.634L34,195.289V458c0,24.301,19.699,44,44,44h360
+                    c22.091,0,40-17.909,40-40V319.323V274C478,249.699,458.301,230,434,230z"/>
+                <path style="fill:#6E87F5;" d="M374.788,142H438c22.091,0,40,17.909,40,40v92v45.323V274c0-24.301-19.699-44-44-44H78
+                    c-24.301,0-44-19.699-44-44l0,0c0-24.301,19.699-44,44-44H78
+                    c-24.301,0-44-19.699-44-44l0,0c0-24.301,19.699-44,44-44h59.454H374.788z"/>
+                <g><circle style="fill:#4BB9F5;" cx="110" cy="365.83" r="20"/><circle style="fill:#4BB9F5;" cx="217.29" cy="355.13" r="20"/></g>
+                <g><circle style="fill:#FF5A5A;" cx="200.62" cy="445.83" r="20"/><circle style="fill:#FF5A5A;" cx="281.12" cy="286.83" r="20"/></g>
+                <path style="fill:#F5C86E;" d="M325.599,186c7.174-12.068,11.307-26.156,11.307-41.215c0-44.617-36.169-80.785-80.785-80.785
+                    s-80.785,36.169-80.785,80.785c0,15.059,4.133,29.147,11.307,41.215H325.599z"/>
+                <path style="fill:#FAE196;" d="M478,409.084H359.539c-24.301,0-44-19.699-44-44l0,0c0-24.3,19.699-44,44-44H478"/>
+                <path d="M438,132h-63.212c-5.522,0-10,4.477-10,10s4.478,10,10,10H438c16.542,0,30,13.458,30,30v50.088
+                    C458.71,224.537,446.876,220,434,220H78c-18.748,0-34-15.252-34-34s15.252-34,34-34h59.454c5.522,0,10-4.477,10-10s-4.478-10-10-10
+                    H78c-29.775,0-54,24.224-54,54c0,2.198,0,272,0,272c0,29.776,24.225,54,54,54h360c27.57,0,50-22.43,50-50V182
+                    C488,154.43,465.57,132,438,132z M468,399.084H359.539c-18.748,0-34-15.252-34-34s15.252-34,34-34H468V399.084z M438,492H78
+                    c-18.748,0-34-15.252-34-34v-41.169h14.524l36.071,36.071c1.876,1.875,4.419,2.929,7.071,2.929h70.676
+                    c4.128,11.639,15.243,20,28.28,20c16.542,0,30-13.458,30-30s-13.458-30-30-30c-13.036,0-24.152,8.361-28.28,20H105.81L69.739,399.76
+                    c-1.876-1.875-4.419-2.929-7.071-2.929H44v-21.746h37.467c3.91,12.026,15.219,20.746,28.533,20.746c16.542,0,30-13.458,30-30
+                    s-13.458-30-30-30c-12.756,0-23.671,8.006-28.002,19.254H44v-19.254h18.667c2.652,0,5.195-1.054,7.071-2.929l36.071-36.071h147.032
+                    c4.128,11.639,15.244,20,28.28,20c16.542,0,30-13.458,30-30s-13.458-30-30-30c-13.036,0-24.152,8.361-28.28,20H101.667
+                    c-2.652,0-5.195,1.054-7.071,2.929l-36.071,36.071H44v-87.918C53.29,235.463,65.123,240,78,240h356c18.748,0,34,15.252,34,34v37.084
+                    H359.539c-29.775,0-54,24.224-54,54s24.225,54,54,54H468V448h-54.379c-5.522,0-10,4.477-10,10s4.478,10,10,10h53.775
+                    C464.609,481.677,452.488,492,438,492z M190.623,445.831c0-5.514,4.486-10,10-10s10,4.486,10,10s-4.486,10-10,10
+                    S190.623,451.345,190.623,445.831z M100,365.831c0-5.514,4.486-10,10-10s10,4.486,10,10s-4.486,10-10,10S100,371.345,100,365.831z
+                    M271.121,286.831c0-5.514,4.486-10,10-10s10,4.486,10,10s-4.486,10-10,10S271.121,292.345,271.121,286.831z"/>
+                </svg>
             </div>
             <h2>Kalkulator CRM</h2>
             <p style="color: var(--text-gray); margin: 5px 0 0 0;">Input Struk Setoran (Supabase)</p>
@@ -323,12 +347,11 @@
             <input type="hidden" id="h_total_fisik" value="0"><input type="hidden" id="val_nama_ekor"><input type="hidden" id="val_selisih" value="0">
 
             <button type="button" class="btn-action btn-blue" id="btn-submit" onclick="processSubmit()">
-                <span>☁️</span> SIMPAN KE DATABASE
+                <span>☁️</span> SIMPAN DATABASE
             </button>
             <button type="button" class="btn-action btn-wa" id="btn-wa" onclick="kirimWA()">
                 <span>📲</span> KIRIM KE WHATSAPP
             </button>
-            
             <p id="status" style="text-align:center; margin-top:20px; font-weight:600; color:var(--text-gray);"></p>
         </form>
     </div>
@@ -356,9 +379,10 @@
 </div>
 
 <script>
+    // --- KONFIGURASI SUPABASE & GAS ---
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwZScDIEPzsXsTWeRtd-LCdtc08143w2dSeHDjqCH4y-NARar1hwmIYMab6Ngw6QpHPVQ/exec'; 
-    const SUPABASE_URL = 'https://mpzxceuhnuhhuvveppmh.supabase.co'; 
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wenhjZXVobnVoaHV2dmVwcG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNjQwNDEsImV4cCI6MjA4Mzg0MDA0MX0.sIRvchXgTH9kEMCqhuM2geYohe1TiipYgxz3PQ_y4R0'; 
+    const SUPABASE_URL = 'https://mpzxceuhnuhuhuveppmh.supabase.co'; 
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wenhjZXVobnVoaHV2dmVwcG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNjQwNDEsImV4cCI6MjA4Mzg0MDA0MX0.sIRvchXgTH9kEMCqhuM2geYohe1TiipYgxz3PQ_y4R0';
     
     let supabase = null;
     let currentStoreCode = "";
@@ -370,23 +394,11 @@
 
     // --- INISIALISASI ---
     window.addEventListener('load', function() {
-        // Init Supabase (dalam try-catch agar aman)
-        try { 
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); 
-        } catch(e) { 
-            console.error("Supabase Init Error", e);
-        }
-
-        // Logic Standar V3
-        getDetailedDeviceInfo();
-        if(localStorage.getItem('crm_sender_phone')) document.getElementById('nomor_pengirim').value = localStorage.getItem('crm_sender_phone');
+        try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.error(e); }
         document.getElementById('tgl').value = getYesterdayDate();
-        hitungGlobal();
+        if(localStorage.getItem('crm_wa')) document.getElementById('nomor_pengirim').value = localStorage.getItem('crm_wa');
         
-        // PENTING: MUNCULKAN LOGIN SCREEN MANUAL UNTUK MENCEGAH BLANK
-        document.getElementById('loginScreen').style.display = 'flex';
-
-        // Cek Login
+        // Cek Login / QR
         const urlParams = new URLSearchParams(window.location.search);
         const qrKode = urlParams.get('kode');
         if (qrKode) {
@@ -411,13 +423,17 @@
         document.getElementById('gpsStatus').innerText = "⏳ Mengecek server...";
         
         try {
-            const res = await fetch(scriptURL + "?action=get_shop_info&kode=" + k);
+            // Failsafe: Jika 3 detik tidak respon, bypass (agar tidak stuck)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            
+            const res = await fetch(scriptURL + "?action=get_shop_info&kode=" + k, { signal: controller.signal });
+            clearTimeout(timeoutId);
             const shop = await res.json();
             if(shop.error) throw new Error(shop.error);
             masukDashboard(k, k, shop.nama);
         } catch(e) {
-            // Mode Darurat (Offline Check) agar tidak stuck
-            alert("Mode Darurat aktif (Offline Check)");
+            // Mode Darurat
             masukDashboard(k, k, "Toko " + k);
         }
     }
@@ -474,17 +490,12 @@
         autoSaveDraft();
     }
 
-    // --- PROSES KIRIM DATA KE SUPABASE ---
     async function processSubmit() {
         let btn = document.getElementById('btn-submit');
         if (!document.getElementById('tgl').value) return alert("Pilih Tanggal!");
-        
-        btn.disabled = true; 
-        btn.innerText = "⏳ Menyimpan...";
-        
+        btn.disabled = true; btn.innerText = "⏳ Menyimpan...";
         try {
-            if(!supabase) throw new Error("Supabase gagal dimuat.");
-            
+            if(!supabase) throw new Error("Supabase gagal.");
             let tgl = document.getElementById('tgl').value;
             let payload = {
                 kode_toko: currentStoreCode, nama_toko: document.getElementById('nama_toko').value,
@@ -493,10 +504,8 @@
                 total_potongan: getCleanNumber(document.getElementById('disp_total_potong').innerText),
                 selisih: Number(document.getElementById('val_selisih').value), pengirim: document.getElementById('nomor_pengirim').value
             };
-
             await supabase.from('rincian_sales').delete().eq('kode_toko', currentStoreCode).eq('tgl_sales', tgl);
             await supabase.from('laporan_sales').upsert(payload, { onConflict: 'kode_toko, tgl_sales' });
-
             let rin = [];
             const map = {'setor_sore':'Setor Sore','setor_malam':'Setor Malam','setor_pagi':'Setor Pagi','ekor_sales':'Ekor Sales','pot_ba':'Potongan BA','pot_lebih':'Potongan Lebih','pot_virtual':'Potongan Virtual'};
             for(let k in map) {
@@ -505,15 +514,8 @@
                 });
             }
             if(rin.length > 0) await supabase.from('rincian_sales').insert(rin);
-
-            alert("✅ Berhasil Simpan!"); 
-            hapusDraft(true); 
-            kirimWA();
-        } catch(e) { 
-            alert("Gagal Simpan: " + e.message); 
-            btn.disabled=false; 
-            btn.innerText="☁️ SIMPAN DATABASE"; 
-        }
+            alert("✅ Berhasil Simpan!"); hapusDraft(true); kirimWA();
+        } catch(e) { alert("Gagal Simpan: " + e.message); btn.disabled=false; btn.innerText="☁️ SIMPAN DATABASE"; }
     }
 
     function kirimWA() {
@@ -539,7 +541,6 @@
     function handleBlur(el) { dataStore[activeField]=Array.from(document.querySelectorAll('.calc-input')).map(i=>getCleanNumber(i.value)); }
     function getYesterdayDate() { let d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; }
     async function getDetailedDeviceInfo() { document.getElementById('info_perangkat').value = navigator.userAgent; }
-    function hapusDraft(silent) { const fd=new FormData(); fd.append('action','delete_draft'); fd.append('Kode Toko',currentStoreCode); fetch(scriptURL,{method:'POST',body:fd,mode:'no-cors'}); if(!silent) location.reload(); }
 </script>
 </body>
 </html>
