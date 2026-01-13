@@ -3,53 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalkulator CRM V3 (Final Fix)</title>
+    <title>Kalkulator CRM</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS ASLI V3 (TIDAK DIUBAH) */
+        /* CSS ASLI V3 - TIDAK DIUBAH */
         :root { --primary:#3b82f6; --primary-dark:#2563eb; --primary-soft:#eff6ff; --bg:#f1f5f9; --card:#ffffff; --text:#1e293b; --gray:#64748b; --success:#10b981; --danger:#ef4444; --danger-soft:#fee2e2; --radius:16px; }
         * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); margin:0; padding:0; min-height:100vh; }
         .container { width:100%; max-width:550px; margin:0 auto; padding:20px; min-height:100vh; display:flex; flex-direction:column; }
         
-        /* LOGIN SCREEN */
-        #loginScreen { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px 25px; background:var(--card); border-radius:var(--radius); box-shadow:0 4px 20px -5px rgba(0,0,0,0.05); margin:20px 0; }
-        .icon-circle { width:80px; height:80px; background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow:0 15px 30px rgba(59,130,246,0.3); }
-        .icon-circle svg { width:40px; height:40px; fill:white; }
-        .pin-wrapper input { font-family:'Poppins',monospace; font-size:2.2rem; width:100%; text-align:center; letter-spacing:12px; padding:15px; border:2px solid #e2e8f0; border-radius:12px; background:#f8fafc; color:var(--text); outline:none; text-transform:uppercase; margin-bottom:20px; }
-        .btn-main { background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color:white; border:none; padding:18px; border-radius:50px; font-weight:600; font-size:1rem; width:100%; cursor:pointer; box-shadow:0 8px 20px rgba(59,130,246,0.25); }
-        .btn-main:active { transform:scale(0.98); }
+        #loginScreen { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px 25px; background:var(--card); border-radius:var(--radius); box-shadow:0 4px 20px rgba(0,0,0,0.05); margin:20px 0; }
+        .icon-circle { width:80px; height:80px; background:var(--primary-soft); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+        .icon-circle svg { width:40px; height:40px; }
+        .pin-wrapper input { font-family:'Poppins',monospace; font-size:2.2rem; width:100%; text-align:center; letter-spacing:10px; padding:15px; border:2px solid #e2e8f0; border-radius:12px; background:#f8fafc; outline:none; text-transform:uppercase; margin-bottom:20px; }
+        .btn-main { background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color:white; border:none; padding:18px; border-radius:50px; font-weight:600; font-size:1rem; width:100%; cursor:pointer; box-shadow:0 8px 20px rgba(59,130,246,0.3); }
         
-        /* DEBUG BOX (PENTING UNTUK DIAGNOSA) */
-        #debugLog { font-size:0.75rem; color:#94a3b8; margin-top:20px; background:#f8fafc; padding:10px; border-radius:8px; width:100%; word-break:break-word; border:1px dashed #e2e8f0; display:none; }
-
-        /* DASHBOARD */
         #dashboard { display:none; padding-bottom:60px; }
-        .header-card { background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color:white; padding:24px; border-radius:var(--radius); margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start; box-shadow:0 10px 25px -5px rgba(37,99,235,0.4); }
-        .card { background:var(--card); border-radius:var(--radius); padding:20px; box-shadow:0 4px 20px -5px rgba(0,0,0,0.05); margin-bottom:15px; }
-        .form-group label { display:flex; align-items:center; font-size:0.85rem; font-weight:600; color:var(--gray); margin-bottom:8px; text-transform:uppercase; }
-        input[type="text"], input[type="date"], input[type="tel"] { width:100%; padding:14px; border:1px solid #e2e8f0; border-radius:12px; font-size:1rem; background:#f8fafc; outline:none; }
-        .input-with-btn { display:flex; gap:10px; }
-        .btn-add { background:#f1f5f9; color:var(--primary); border:1px solid #e2e8f0; width:55px; border-radius:12px; font-size:1.5rem; cursor:pointer; }
+        .header-card { background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color:white; padding:24px; border-radius:var(--radius); margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start; box-shadow:0 10px 25px rgba(37,99,235,0.4); }
+        .card { background:var(--card); border-radius:var(--radius); padding:20px; margin-bottom:15px; border:1px solid #f1f5f9; }
+        .form-group { margin-bottom:15px; }
+        .form-group label { display:block; font-size:0.85rem; font-weight:600; color:var(--gray); margin-bottom:5px; }
+        input { width:100%; padding:14px; border:1px solid #e2e8f0; border-radius:12px; background:#f8fafc; font-size:1rem; outline:none; }
         
         .summary-card { background:#1e293b; color:white; text-align:center; padding:25px; border-radius:var(--radius); }
-        .summary-row { display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; opacity:0.9; }
-        .status-box { padding:15px; border-radius:12px; font-weight:700; margin-top:15px; }
+        .status-box { padding:12px; border-radius:10px; font-weight:bold; margin-top:15px; background:#334155; color:white; }
         .status-ok { background:var(--success); } .status-min { background:var(--danger); } .status-plus { background:var(--primary); }
         
-        .btn-action { width:100%; padding:18px; border:none; border-radius:var(--radius); font-weight:700; color:white; margin-top:15px; cursor:pointer; }
-        .bg-blue { background:#0ea5e9; } .bg-green { background:var(--success); }
+        .btn-action { width:100%; padding:16px; border:none; border-radius:var(--radius); font-weight:bold; color:white; margin-top:15px; cursor:pointer; }
+        .bg-blue { background:#0ea5e9; } .bg-green { background:var(--success); } .bg-red { background:var(--danger); }
         
-        /* MODALS */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; }
-        .modal-content { background:white; padding:25px; border-radius:24px; width:90%; max-width:350px; }
-        .calc-row { display:flex; gap:8px; margin-bottom:8px; }
-        .calc-input { flex:1; padding:12px; border:1px solid #e2e8f0; border-radius:8px; }
-        .btn-remove { width:40px; background:#fee2e2; color:var(--danger); border:none; border-radius:8px; }
+        .modal-content { background:white; padding:25px; border-radius:20px; width:90%; max-width:350px; text-align:center; }
+        
+        /* Utility Classes */
+        .hidden { display:none !important; }
+        .show { display:block !important; }
+        .flex { display:flex; }
+        
+        /* Calc Styles */
+        .calc-row { display:flex; gap:5px; margin-bottom:5px; }
+        .btn-remove { background:#fee2e2; color:red; border:none; width:40px; border-radius:8px; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -57,28 +56,27 @@
 <div class="container">
     <div id="loginScreen">
         <div class="icon-circle">
-            <svg viewBox="0 0 24 24"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/></svg>
+            <svg viewBox="0 0 24 24"><path fill="#3b82f6" d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/></svg>
         </div>
         <h2 style="margin:0; font-family:'Poppins',sans-serif;">CRM V3</h2>
-        <p style="color:var(--gray); margin:5px 0 20px;">Supabase Edition</p>
+        <p style="color:var(--gray); margin-bottom:30px;">Supabase Direct Mode</p>
         
         <div class="pin-wrapper">
             <input type="text" id="inputKode" placeholder="KODE" maxlength="4">
         </div>
         
-        <button id="btnLogin" class="btn-main" onclick="attemptLogin()">MASUK APLIKASI</button>
-        
-        <div id="debugLog">System Ready...</div>
+        <button id="btnLogin" class="btn-main" onclick="doLogin()">MASUK APLIKASI</button>
+        <p id="msg" style="margin-top:20px; font-size:0.9rem; color:#94a3b8;">System Ready</p>
     </div>
 
     <div id="dashboard">
         <div class="header-card">
             <div>
                 <span style="font-size:0.8rem; opacity:0.8">Halo,</span>
-                <h2 id="dispNama" style="margin:0">Nama Toko</h2>
+                <h3 id="dispNama" style="margin:0">Nama Toko</h3>
                 <span id="dispKode" style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:6px; font-size:0.8rem;">CODE</span>
             </div>
-            <button onclick="logout()" style="background:rgba(255,255,255,0.9); color:red; border:none; padding:8px 15px; border-radius:20px; font-weight:bold;">Keluar</button>
+            <button onclick="logout()" style="background:white; color:red; border:none; padding:6px 15px; border-radius:20px; font-weight:bold;">Keluar</button>
         </div>
 
         <button onclick="hapusDraft()" style="width:100%; padding:12px; border:1px solid #fee2e2; background:white; color:red; border-radius:12px; margin-bottom:20px;">🗑️ Hapus Draf Cloud</button>
@@ -89,82 +87,59 @@
         </div>
 
         <div class="card" style="background:#eff6ff; text-align:center;">
-            <label style="color:#1d4ed8; font-weight:bold; display:block; margin-bottom:5px;">TOTAL SALES (Rp)</label>
-            <input type="text" id="total_sales" placeholder="0" style="text-align:center; font-size:1.5rem; font-weight:bold;" onkeyup="fmt(this); hitung();">
+            <label style="color:#1d4ed8; font-weight:bold;">TOTAL SALES (Rp)</label>
+            <input type="text" id="total_sales" placeholder="0" style="text-align:center; font-size:1.5rem; font-weight:bold; margin-top:5px;" onkeyup="fmt(this); hitung();">
         </div>
 
         <div id="dynamicInputs"></div>
 
-        <div class="card summary-card">
-            <div class="summary-row"><span>Fisik</span><b id="txtFisik">0</b></div>
-            <div class="summary-row"><span>Potongan</span><b id="txtPotong">0</b></div>
+        <div class="summary-card">
+            <div class="summary-row"><span>Total Fisik</span><b id="txtFisik">Rp 0</b></div>
+            <div class="summary-row"><span>Total Potongan</span><b id="txtPotong">Rp 0</b></div>
             <hr style="opacity:0.2; margin:15px 0;">
-            <div id="statusBox" class="status-box status-ok">✅ BALANCE</div>
+            <div id="statusBox" class="status-box">✅ BALANCE</div>
         </div>
 
         <input type="hidden" id="nama_toko"><input type="hidden" id="val_fisik" value="0"><input type="hidden" id="val_selisih" value="0">
         
-        <button id="btnSimpan" class="btn-action bg-blue" onclick="processSubmit()">☁️ SIMPAN DATABASE</button>
+        <button id="btnSimpan" class="btn-action bg-blue" onclick="kirimDatabase()">☁️ SIMPAN DATABASE</button>
         <button class="btn-action bg-green" onclick="kirimWA()">📲 KIRIM WA</button>
-        <p id="statusTxt" style="text-align:center; margin-top:10px; color:gray; font-size:0.9rem;"></p>
     </div>
 </div>
 
 <div id="calcModal" class="modal">
     <div class="modal-content">
         <h3>Rincian</h3>
-        <div id="calcList" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
-        <button onclick="addRow()" style="width:100%; padding:10px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:10px;">+ Tambah</button>
+        <div id="calcList" style="max-height:200px; overflow-y:auto; margin-bottom:10px;"></div>
+        <button onclick="addRow()" style="width:100%; padding:10px; border:1px dashed #cbd5e1; background:#f8fafc; border-radius:8px;">+ Tambah</button>
         <div style="text-align:right; margin-top:15px; font-weight:bold;">Total: <span id="modalTotal">0</span></div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button onclick="document.getElementById('calcModal').style.display='none'" style="flex:1; padding:10px; background:white; border:1px solid #ddd; border-radius:10px;">Batal</button>
-            <button onclick="saveCalc()" style="flex:1; padding:10px; background:var(--primary); color:white; border:none; border-radius:10px;">Simpan</button>
-        </div>
+        <button onclick="saveCalc()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:12px; margin-top:15px;">Simpan</button>
     </div>
 </div>
 
 <script>
-    // --- KONFIGURASI SUPABASE & GAS (YANG BENAR) ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZScDIEPzsXsTWeRtd-LCdtc08143w2dSeHDjqCH4y-NARar1hwmIYMab6Ngw6QpHPVQ/exec';
-    
-    // GANTI KE URL & KEY YANG BENAR (JWT)
+    // --- KONFIGURASI SUPABASE ---
     const SB_URL = 'https://mpzxceuhnuhuhuveppmh.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wenhjZXVobnVoaHV2dmVwcG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNjQwNDEsImV4cCI6MjA4Mzg0MDA0MX0.sIRvchXgTH9kEMCqhuM2geYohe1TiipYgxz3PQ_y4R0';
-
     let supabase = null;
-    let dataStore = {}; 
-    let activeField = ""; 
+
+    let dataStore = {};
+    let activeField = "";
     let currentCode = "";
 
-    // 1. FUNGSI LOG (Agar kita tahu errornya dimana)
-    function log(msg) {
-        console.log(msg);
-        let box = document.getElementById('debugLog');
-        box.style.display = 'block';
-        box.innerHTML = msg; // Tampilkan pesan terakhir
-    }
-
-    // 2. INIT APLIKASI
+    // 1. INIT
     window.onload = function() {
-        log("Memuat Aplikasi...");
-        
-        // Coba Init Supabase
         try {
-            if(window.supabase) {
-                supabase = window.supabase.createClient(SB_URL, SB_KEY);
-                log("Supabase Siap.");
-            } else {
-                log("⚠️ Gagal memuat library Supabase. Cek koneksi.");
-            }
+            supabase = window.supabase.createClient(SB_URL, SB_KEY);
         } catch(e) {
-            log("⚠️ Error Init Supabase: " + e.message);
+            alert("Gagal memuat sistem: " + e.message);
         }
 
         document.getElementById('tgl').value = new Date(new Date()-864e5).toISOString().split('T')[0];
         if(localStorage.getItem('crm_wa')) document.getElementById('wa').value = localStorage.getItem('crm_wa');
         renderForm();
 
-        // Cek Login Sebelumnya
+        // Cek Login
         let sess = localStorage.getItem('crm_sess');
         if(sess) {
             let p = sess.split('|');
@@ -172,54 +147,42 @@
         }
     };
 
-    // 3. LOGIN SISTEM (ANTI-STUCK)
-    function attemptLogin() {
+    // 2. LOGIN (LANGSUNG KE SUPABASE - NO GAS)
+    async function doLogin() {
         let k = document.getElementById('inputKode').value.toUpperCase().trim();
-        if(!k) return alert("Isi Kode!");
-        if(k === 'COBA') return masukDashboard('COBA', 'Toko Uji Coba');
-
         let btn = document.getElementById('btnLogin');
+        let msg = document.getElementById('msg');
+
+        if(!k) return alert("Isi Kode!");
+        if(k==='COBA') return masukDashboard('COBA', 'Toko Uji Coba');
+
         btn.disabled = true; 
         btn.innerText = "⏳ Mengecek...";
-        log("Menghubungi Server Google...");
+        msg.innerText = "Mencari data toko...";
 
-        // TIMER PENGAMAN: Jika 3 detik tidak ada respon, PAKSA MASUK MANUAL
-        let isDone = false;
-        setTimeout(() => {
-            if(!isDone) {
-                isDone = true;
-                if(confirm("Koneksi lambat. Masuk mode manual?")) {
-                    masukDashboard(k, "Toko " + k);
-                } else {
-                    btn.disabled = false; btn.innerText = "MASUK APLIKASI";
-                    log("Login Timeout.");
-                }
-            }
-        }, 3000);
+        try {
+            // Ambil data toko dari tabel 'tb_toko' di Supabase
+            let { data, error } = await supabase
+                .from('tb_toko')
+                .select('*')
+                .eq('kode', k)
+                .single();
 
-        // FETCH GOOGLE SCRIPT
-        fetch(GAS_URL + "?action=get_shop_info&kode=" + k)
-        .then(r => r.json())
-        .then(d => {
-            if(!isDone) {
-                isDone = true;
-                if(d.error) {
-                    alert(d.error);
-                    btn.disabled = false; btn.innerText = "MASUK APLIKASI";
-                    log("Kode Salah / Error: " + d.error);
-                } else {
-                    masukDashboard(k, d.nama);
-                }
+            if(error || !data) {
+                throw new Error("Kode Toko Tidak Ditemukan di Database.");
             }
-        })
-        .catch(e => {
-            // Error ini biasanya ditangani oleh Timer, tapi kalau cepat fail:
-            log("Fetch Error: " + e.message);
-        });
+
+            masukDashboard(k, data.nama);
+
+        } catch(e) {
+            alert("Gagal Login: " + e.message);
+            btn.disabled = false;
+            btn.innerText = "MASUK APLIKASI";
+            msg.innerText = "Coba lagi atau gunakan mode COBA.";
+        }
     }
 
     function masukDashboard(kode, nama) {
-        log("Login Berhasil: " + nama);
         currentCode = kode;
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
@@ -232,34 +195,34 @@
 
     function logout() { localStorage.removeItem('crm_sess'); location.reload(); }
 
-    // 4. LOGIKA FORM & HITUNGAN
+    // 3. LOGIC FORM
     function renderForm() {
         const fs = [{id:'setor_sore',l:'☀️ Setor Sore'},{id:'setor_malam',l:'🌙 Setor Malam'},{id:'setor_pagi',l:'🌅 Setor Pagi'},{id:'ekor_sales',l:'🪙 Ekor Sales',n:true}];
         const pt = [{id:'pot_ba',l:'⚠️ Potongan BA'},{id:'pot_lebih',l:'➕ Pot. Lebih',c:true},{id:'pot_virtual',l:'💳 Pot. Virtual'}];
         
         let h = `<div class="card"><h3 style="color:#3b82f6;margin-bottom:10px;">💵 Fisik</h3>`;
-        fs.forEach(f => h += fieldHtml(f));
+        fs.forEach(f => h += htmlField(f));
         h += `</div><div class="card"><h3 style="color:#ef4444;margin-bottom:10px;">✂️ Potongan</h3>`;
-        pt.forEach(f => h += fieldHtml(f));
+        pt.forEach(f => h += htmlField(f));
         h += `</div>`;
         document.getElementById('dynamicInputs').innerHTML = h;
     }
 
-    function fieldHtml(f) {
-        if(!dataStore[f.id]) dataStore[f.id] = [];
-        let note = f.n ? `<input type="text" id="note_${f.id}" placeholder="Ket. Ekor" oninput="autoSave()" style="margin-top:5px; border:1px dashed #cbd5e1;">` : '';
+    function htmlField(f) {
+        if(!dataStore[f.id]) dataStore[f.id]=[];
+        let note = f.n ? `<input type="text" id="note_${f.id}" placeholder="Ket. Ekor" oninput="autoSave()" style="margin-top:5px; border:1px dashed #cbd5e1; width:100%; padding:10px; border-radius:8px;">` : '';
         let chk = f.c ? `<span style="float:right; font-size:0.8rem"><input type="checkbox" id="check_${f.id}" onchange="autoSave()"> Tertelan?</span>` : '';
         return `<div class="form-group"><label>${f.l} ${chk}</label>
-                <div class="input-with-btn"><input type="text" id="view_${f.id}" value="Rp 0" readonly onclick="openCalc('${f.id}')">
-                <button class="btn-add" onclick="openCalc('${f.id}')">+</button></div>${note}</div>`;
+        <div style="display:flex; gap:10px;"><input type="text" id="view_${f.id}" value="Rp 0" readonly onclick="openCalc('${f.id}')" style="background:white; font-weight:bold;">
+        <button class="btn-add" onclick="openCalc('${f.id}')">+</button></div>${note}</div>`;
     }
 
-    // CALC
-    function openCalc(id) { activeField = id; document.getElementById('calcModal').style.display = 'flex'; renderRows(); }
+    // 4. CALC
+    function openCalc(id) { activeField=id; document.getElementById('calcModal').style.display='flex'; renderRows(); }
     function renderRows() {
-        let c = document.getElementById('calcList'); c.innerHTML = "";
+        let c = document.getElementById('calcList'); c.innerHTML="";
         (dataStore[activeField]||[]).forEach((v,i) => {
-            c.innerHTML += `<div class="calc-row"><input class="calc-input" type="tel" value="${v==0?'':v.toLocaleString('id-ID')}" onkeyup="fmt(this);upTotal()" placeholder="0">
+            c.innerHTML += `<div class="calc-row"><input class="calc-input" type="tel" value="${v==0?'':v.toLocaleString('id-ID')}" onkeyup="fmt(this);upTotal()" placeholder="0" style="flex:1;">
             <button class="btn-remove" onclick="delRow(${i})">✕</button></div>`;
         });
         upTotal();
@@ -267,23 +230,16 @@
     function addRow() { saveTmp(); dataStore[activeField].push(0); renderRows(); }
     function delRow(i) { saveTmp(); dataStore[activeField].splice(i,1); renderRows(); }
     function saveTmp() { dataStore[activeField] = Array.from(document.querySelectorAll('.calc-input')).map(i=>getNum(i.value)); }
-    function upTotal() { 
-        let t=0; document.querySelectorAll('.calc-input').forEach(i=>t+=getNum(i.value));
-        document.getElementById('modalTotal').innerText = t.toLocaleString('id-ID');
-    }
-    function saveCalc() {
-        saveTmp(); let t = dataStore[activeField].reduce((a,b)=>a+b,0);
-        document.getElementById('view_'+activeField).value = "Rp " + t.toLocaleString('id-ID');
-        document.getElementById('calcModal').style.display = 'none'; hitung();
-    }
+    function upTotal() { let t=0; document.querySelectorAll('.calc-input').forEach(i=>t+=getNum(i.value)); document.getElementById('modalTotal').innerText=t.toLocaleString('id-ID'); }
+    function saveCalc() { saveTmp(); let t=dataStore[activeField].reduce((a,b)=>a+b,0); document.getElementById('view_'+activeField).value="Rp "+t.toLocaleString('id-ID'); document.getElementById('calcModal').style.display='none'; hitung(); }
 
     function hitung() {
         let sales = getNum(document.getElementById('total_sales').value);
         let fisik=0; ['setor_sore','setor_malam','setor_pagi','ekor_sales'].forEach(k=>fisik+=sumStore(k));
         let potong=0; ['pot_ba','pot_lebih','pot_virtual'].forEach(k=>potong+=sumStore(k));
         
-        document.getElementById('txtFisik').innerText = fisik.toLocaleString('id-ID');
-        document.getElementById('txtPotong').innerText = potong.toLocaleString('id-ID');
+        document.getElementById('txtFisik').innerText = "Rp "+fisik.toLocaleString('id-ID');
+        document.getElementById('txtPotong').innerText = "Rp "+potong.toLocaleString('id-ID');
         document.getElementById('val_fisik').value = fisik;
         
         let sel = (fisik+potong) - sales;
@@ -296,22 +252,19 @@
         autoSave();
     }
 
-    // 5. KIRIM DATA (SUPABASE)
-    async function processSubmit() {
+    // 5. DATABASE & DRAFT (SUPABASE ONLY)
+    async function kirimDatabase() {
         let btn = document.getElementById('btnSimpan');
-        let stat = document.getElementById('statusTxt');
-        
         if(!document.getElementById('tgl').value) return alert("Pilih Tanggal!");
         
         btn.disabled = true; btn.innerText = "⏳ Menyimpan...";
         
         try {
-            if(!supabase) throw new Error("Supabase Belum Siap (Cek Koneksi)");
-
+            let tgl = document.getElementById('tgl').value;
             let payload = {
                 kode_toko: currentCode,
                 nama_toko: document.getElementById('nama_toko').value,
-                tgl_sales: document.getElementById('tgl').value,
+                tgl_sales: tgl,
                 total_sales: getNum(document.getElementById('total_sales').value),
                 total_fisik: Number(document.getElementById('val_fisik').value),
                 total_potongan: getNum(document.getElementById('txtPotong').innerText),
@@ -319,13 +272,10 @@
                 pengirim: document.getElementById('wa').value
             };
 
-            // 1. Hapus Data Lama
-            await supabase.from('rincian_sales').delete().eq('kode_toko', currentCode).eq('tgl_sales', payload.tgl_sales);
-            // 2. Upsert Induk
-            let { error: err1 } = await supabase.from('laporan_sales').upsert(payload, { onConflict: 'kode_toko, tgl_sales' });
-            if(err1) throw err1;
+            await supabase.from('rincian_sales').delete().eq('kode_toko', currentCode).eq('tgl_sales', tgl);
+            let { error } = await supabase.from('laporan_sales').upsert(payload, { onConflict: 'kode_toko, tgl_sales' });
+            if(error) throw error;
 
-            // 3. Insert Rincian
             let rin = [];
             const map = {'setor_sore':'Setor Sore', 'setor_malam':'Setor Malam', 'setor_pagi':'Setor Pagi', 'ekor_sales':'Ekor Sales', 'pot_ba':'Potongan BA', 'pot_lebih':'Potongan Lebih', 'pot_virtual':'Potongan Virtual'};
             
@@ -333,72 +283,63 @@
                 if(dataStore[k]) {
                     dataStore[k].forEach(v => {
                         if(v > 0) {
-                            let desc = k==='ekor_sales' ? document.getElementById('note_'+k).value : '';
-                            if(k==='pot_lebih' && document.getElementById('check_'+k).checked) desc = "Tertelan";
-                            rin.push({
-                                kode_toko: currentCode, tgl_sales: payload.tgl_sales,
-                                kategori: map[k], nominal: v, keterangan: desc, cek_manual_saldo: null
-                            });
+                            let ket = k==='ekor_sales' ? document.getElementById('note_'+k).value : '';
+                            if(k==='pot_lebih' && document.getElementById('check_'+k).checked) ket = "Tertelan";
+                            rin.push({ kode_toko: currentCode, tgl_sales: tgl, kategori: map[k], nominal: v, keterangan: ket, cek_manual_saldo: null });
                         }
                     });
                 }
             }
             if(rin.length > 0) await supabase.from('rincian_sales').insert(rin);
 
-            stat.innerText = "✅ DATA TERSIMPAN!";
+            alert("✅ Data Tersimpan!");
             hapusDraft(true);
-            
-            setTimeout(() => { 
-                kirimWA(); 
-                btn.disabled = false; btn.innerText = "☁️ SIMPAN DATABASE"; 
-            }, 1000);
+            setTimeout(() => { kirimWA(); btn.disabled=false; btn.innerText="☁️ SIMPAN DATABASE"; }, 1000);
 
         } catch(e) {
-            console.error(e);
-            alert("Gagal Simpan Database: " + e.message + "\n\nLanjut Kirim WA Manual?");
+            alert("Gagal: " + e.message);
             btn.disabled = false; btn.innerText = "Coba Lagi";
-            kirimWA(); // Fallback
         }
     }
 
     function kirimWA() {
         let tgl = document.getElementById('tgl').value.split('-');
         let sel = Number(document.getElementById('val_selisih').value);
-        let txt = `*LAPORAN SALES*\n*${currentCode} - ${document.getElementById('nama_toko').value}*\nTgl: ${tgl[2]}-${tgl[1]}-${tgl[0]}\nSales: Rp ${document.getElementById('total_sales').value}\n\n*STATUS: ${document.getElementById('statusBox').innerText}*\n\nPengirim: ${document.getElementById('wa').value}`;
+        let stat = sel===0?"BALANCE OK ✅":(sel>0?`LEBIH (+) ${sel.toLocaleString('id-ID')}`:`KURANG (-) ${Math.abs(sel).toLocaleString('id-ID')}`);
+        let txt = `*LAPORAN SALES*\n*${currentCode} - ${document.getElementById('nama_toko').value}*\nTgl: ${tgl[2]}-${tgl[1]}-${tgl[0]}\nSales: Rp ${document.getElementById('total_sales').value}\n\n*STATUS: ${stat}*\n\nPengirim: ${document.getElementById('wa').value}`;
         window.open("https://wa.me/6285183347653?text=" + encodeURIComponent(txt), "_blank");
         location.reload();
     }
 
-    // HELPER
+    // DRAFT KE SUPABASE (TABLE tb_draft)
+    async function autoSave() {
+        if(!currentCode) return;
+        let d = { tgl:document.getElementById('tgl').value, sales:document.getElementById('total_sales').value, data:dataStore };
+        await supabase.from('tb_draft').upsert({ kode_toko: currentCode, draft_data: d });
+    }
+
+    async function loadDraft() {
+        let { data } = await supabase.from('tb_draft').select('draft_data').eq('kode_toko', currentCode).single();
+        if(data && data.draft_data) {
+            let d = data.draft_data;
+            document.getElementById('total_sales').value = d.sales;
+            if(d.data) dataStore = d.data;
+            for(let k in dataStore) {
+                let t = sumStore(k);
+                if(document.getElementById('view_'+k)) document.getElementById('view_'+k).value = "Rp "+t.toLocaleString('id-ID');
+            }
+            hitung();
+        }
+    }
+
+    async function hapusDraft(silent) {
+        await supabase.from('tb_draft').delete().eq('kode_toko', currentCode);
+        if(!silent) location.reload();
+    }
+
     function fmt(e) { e.value = (getNum(e.value)).toLocaleString('id-ID'); if(e.value=='0') e.value=''; }
     function getNum(v) { return Number(v.toString().replace(/\./g,'').replace(/[^0-9-]/g,''))||0; }
     function sumStore(k) { return (dataStore[k]||[]).reduce((a,b)=>a+b,0); }
-    
-    function autoSave() {
-        let d = { tgl:document.getElementById('tgl').value, sales:document.getElementById('total_sales').value, data:dataStore };
-        let fd = new FormData(); fd.append('action','save_draft'); fd.append('Kode Toko',currentCode); fd.append('draft_data',JSON.stringify(d));
-        fetch(GAS_URL, {method:'POST', body:fd, mode:'no-cors'});
-    }
-    
-    function loadDraft() {
-        fetch(GAS_URL + "?action=load_draft&kode=" + currentCode).then(r=>r.json()).then(d=>{
-            if(d.sales) {
-                document.getElementById('total_sales').value = d.sales;
-                if(d.data) dataStore = d.data;
-                for(let k in dataStore) {
-                    let t = sumStore(k);
-                    if(document.getElementById('view_'+k)) document.getElementById('view_'+k).value = "Rp "+t.toLocaleString('id-ID');
-                }
-                hitung();
-            }
-        });
-    }
-    
-    function hapusDraft(silent) {
-        let fd = new FormData(); fd.append('action','delete_draft'); fd.append('Kode Toko',currentCode);
-        fetch(GAS_URL, {method:'POST', body:fd, mode:'no-cors'});
-        if(!silent) location.reload();
-    }
 </script>
 </body>
 </html>
