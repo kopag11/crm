@@ -306,8 +306,8 @@
     function logout() { localStorage.removeItem('crm_sess'); location.reload(); }
 
     function initForm() {
-        const f1 = [{id:'setor_sore', l:'☀️ Setor Sore', d:'Sales H-1'},{id:'setor_malam', l:'🌙 Setor Malam', d:'21.00-24.00'},{id:'setor_pagi', l:'🌅 Setor Pagi', d:'24.00-Selesai'},{id:'ekor_sales', l:'🪙 Ekor Sales', d:'Transfer', n:true}];
-        const f2 = [{id:'pot_ba', l:'⚠️ Potongan BA', d:'Varian'},{id:'pot_lebih', l:'➕ Potongan Lebih', d:'Tertelan', c:true},{id:'pot_virtual', l:'💳 Potongan Virtual', d:'Koreksi'}];
+        const f1 = [{id:'setor_sore', l:'☀️ Setor Sore', d:'Setoran yang dilakukan setelah sales kemarin sudah selesai (ORI)'},{id:'setor_malam', l:'🌙 Setor Malam', d:'Setoran yang dilakukan saat jam 21.00 sampai jam 24.00'},{id:'setor_pagi', l:'🌅 Setor Pagi', d:'Setoran yang dilakukan dari jam 24.00 sampai setoran sales kemarin selesai'},{id:'ekor_sales', l:'🪙 Ekor Sales', d:'Transferan yang menggunakan mobile banking untuk ekor, dan buktinya dikirim ke WA', n:true}];
+        const f2 = [{id:'pot_ba', l:'⚠️ Potongan BA', d:'potongan yang sudah ada email klaim varian dari Finanace'},{id:'pot_lebih', l:'➕ Potongan Lebih', d:'Potong atas kelebihan setoran sales sebelumnya atau cetang kotak jika Uang Tertelan', c:true},{id:'pot_virtual', l:'💳 Potongan Virtual', d:'Potong atas email dari virtual yg menyatakan gagal atau bisa koreksi sales'}];
         let h = `<div class="card"><div class="section-title t-fisik"><span>💵</span> Uang Fisik</div>`;
         f1.forEach(f=>h+=createFieldHtml(f)); h+=`</div><div class="card"><div class="section-title t-potong"><span>✂️</span> Potongan</div>`;
         f2.forEach(f=>h+=createFieldHtml(f)); h+=`</div>`; document.getElementById('dynamicInputs').innerHTML=h;
