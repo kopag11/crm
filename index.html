@@ -12,17 +12,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary:#3b82f6; --primary-dark:#2563eb; --primary-soft:#eff6ff; --bg-color:#f1f5f9; --card-bg:#ffffff; --text-dark:#1e293b; --text-gray:#64748b; --success:#10b981; --success-soft:#d1fae5; --warning:#f59e0b; --warning-soft:#fef3c7; --danger:#ef4444; --danger-soft:#fee2e2; --radius:16px; --radius-sm:12px; --shadow:0 4px 20px -5px rgba(0,0,0,0.05); }
+        :root {
+            --primary: #3b82f6; --primary-dark: #2563eb; --primary-soft: #eff6ff;
+            --bg-color: #f1f5f9; --card-bg: #ffffff; --text-dark: #1e293b;
+            --text-gray: #64748b; --success: #10b981; --success-soft: #d1fae5;
+            --warning: #f59e0b; --warning-soft: #fef3c7; --danger: #ef4444;
+            --danger-soft: #fee2e2; --radius: 16px; --radius-sm: 12px;
+            --shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+        }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0; min-height: 100vh; line-height: 1.5; }
         .container { width: 100%; max-width: 550px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+        h1, h2, h3 { family: 'Poppins', sans-serif; margin: 0; color: var(--text-dark); }
         
-        #qrOverlay, #exitScreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: white; }
+        #qrOverlay, #exitScreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         #exitScreen { background: #f1f5f9; z-index: 10000; }
         .pulse-icon { font-size: 4rem; margin-bottom: 20px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        #loginScreen { flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 25px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin: 20px 0; }
+        #loginScreen { flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 25px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 20px; margin-bottom: 20px; }
         .icon-circle { width: 70px; height: 70px; background: var(--primary-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; color: var(--primary); }
         .icon-circle svg { width: 40px; height: 40px; }
         .login-note { background: var(--danger-soft); color: #b91c1c; padding: 12px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 8px; }
@@ -44,7 +52,7 @@
         #total_sales { background: white; border-color: #93c5fd; color: var(--primary-dark); font-weight: 700; font-size: 1.4rem; text-align: center; }
         .input-with-btn { display: flex; gap: 10px; }
         .btn-add { background: var(--bg-color); color: var(--primary); border: 1px solid #e2e8f0; width: 55px; border-radius: var(--radius-sm); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .summary-card { background: #1e293b; color: white; text-align: center; padding: 25px; border-radius: var(--radius); }
+        .summary-card { background: #1e293b; color: white; text-align: center; padding: 25px; border-radius: var(--radius); position: relative; overflow: hidden; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; opacity: 0.9; }
         .status-box { padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .status-ok { background: var(--success); color: white; }
@@ -103,7 +111,7 @@
                 </svg>
             </div>
             <h2>Kalkulator CRM</h2>
-            <p style="color: var(--text-gray); margin: 5px 0 0 0;">Input Struk Setoran</p>
+            <p style="color: var(--text-gray); margin: 5px 0 0 0;">Input Struk Setoran (Supabase)</p>
         </div>
         
         <div class="login-note"><span>📍</span> Wajib berada di lokasi toko</div>
@@ -138,7 +146,7 @@
             <div class="card highlight-card">
                 <div class="form-group" style="margin-bottom:0;">
                     <label style="color:var(--primary-dark); text-align: center; width: 100%;">💰 TOTAL SALES TUTUPAN (Rp)</label>
-                    <input type="text" inputmode="numeric" name="Total Sales" id="total_sales" placeholder="0" onkeyup="formatRibuan(this); hitungGlobal();">
+                    <input type="tel" inputmode="numeric" name="Total Sales" id="total_sales" placeholder="0" onkeyup="formatRibuan(this); hitungGlobal();">
                 </div>
             </div>
 
@@ -156,7 +164,6 @@
 
             <button type="button" class="btn-action bg-green" id="btn-submit" onclick="trySubmitForm()">💾 SIMPAN DATABASE</button>
             <button type="button" class="btn-action btn-wa" id="btn-wa" onclick="kirimWA()"><span>📲</span> KIRIM KE WHATSAPP</button>
-            
             <p id="status" style="text-align:center; margin-top:20px; font-weight:600; color:var(--text-gray);"></p>
         </form>
     </div>
@@ -220,7 +227,6 @@
         }
     });
 
-
     async function doLogin(bypassGPS = false, isSilent = false) {
         const k = document.getElementById('inputKode').value.toUpperCase().trim();
         const btn = document.getElementById('btnLogin');
@@ -273,8 +279,18 @@
     function logout() { localStorage.removeItem('crm_sess'); location.reload(); }
 
     function initForm() {
-        const f1 = [{id:'setor_sore', l:'☀️ Setor Sore', d:'Setoran yang dilakukan setelah sales kemarin sudah selesai (ORI)'}, {id:'setor_malam', l:'🌙 Setor Malam', d:'Setoran yang dilakukan saat jam 21.00 sampai jam 24.00'}, {id:'setor_pagi', l:'🌅 Setor Pagi (H+1)', d:'Setoran yang dilakukan dari jam 24.00 sampai setoran sales kemarin selesai'}, {id:'ekor_sales', l:'🪙 Ekor Sales', d:'Transferan yang menggunakan mobile banking untuk ekor, dan buktinya dikirim ke WA', n:true}];
-        const f2 = [{id:'pot_ba', l:'⚠️ Potongan BA Var', d:'Klaim varian, harus ada email dari finance'}, {id:'pot_lebih', l:'➕ Potongan Lebih / Tertelan', d:'Kelebihan setoran atau uang tertelan', c:true}, {id:'pot_virtual', l:'💳 Potongan Virtual', d:'Email virtual koreksi sales'}];
+        const f1 = [
+            {id:'setor_sore', l:'☀️ Setor Sore', d:'Setoran yang dilakukan setelah sales kemarin sudah selesai (ORI)'},
+            {id:'setor_malam', l:'🌙 Setor Malam', d:'Setoran yang dilakukan saat jam 21.00 sampai jam 24.00'},
+            {id:'setor_pagi', l:'🌅 Setor Pagi (H+1)', d:'Setoran yang dilakukan dari jam 24.00 sampai setoran sales kemarin selesai'},
+            {id:'ekor_sales', l:'🪙 Ekor Sales', d:'Transferan yang menggunakan mobile banking untuk ekor, dan buktinya dikirim ke WA', n:true}
+        ];
+        const f2 = [
+            {id:'pot_ba', l:'⚠️ Potongan BA Var', d:'Klaim varian, harus ada email dari finance'},
+            {id:'pot_lebih', l:'➕ Potongan Lebih / Tertelan', d:'Kelebihan setoran atau uang tertelan', c:true},
+            {id:'pot_virtual', l:'💳 Potongan Virtual', d:'Email virtual koreksi sales'}
+        ];
+        
         let h = `<div class="card"><div class="section-title t-fisik"><span>💵</span> Uang Fisik</div>`;
         f1.forEach(f=>h+=createFieldHtml(f)); h+=`</div><div class="card"><div class="section-title t-potong"><span>✂️</span> Potongan</div>`;
         f2.forEach(f=>h+=createFieldHtml(f)); h+=`</div>`; document.getElementById('dynamicInputs').innerHTML=h;
@@ -285,18 +301,16 @@
         let note = f.n?`<input type="text" id="note_ekor" placeholder="Ket. Ekor (Misal: BCA Budi)" value="${document.getElementById('val_nama_ekor')?document.getElementById('val_nama_ekor').value:''}" oninput="document.getElementById('val_nama_ekor').value=this.value;autoSaveDraft()" style="margin-top:10px; border:1px dashed #cbd5e1; background:#f8fafc">`:'';
         let chk = f.c?`<div class="check-tertelan-wrapper"><input type="checkbox" id="check_tertelan" onchange="autoSaveDraft()"><label for="check_tertelan" style="margin-left:5px; font-size:0.8rem">Tertelan?</label></div>`:'';
         let info = f.d?`<span class="info-btn" onclick="showAlert('Info','${f.d}')">i</span>`:'';
-        return `<div class="form-group"><label>${f.label || f.l} ${info} ${chk}</label><div class="input-with-btn"><input type="text" id="view_${f.id}" value="Rp 0" readonly><button type="button" class="btn-add" onclick="openCalc('${f.id}','${f.label || f.l}')">+</button></div>${note}</div>`;
+        return `<div class="form-group"><label>${f.l} ${info} ${chk}</label><div class="input-with-btn"><input type="text" id="view_${f.id}" value="Rp 0" readonly><button type="button" class="btn-add" onclick="openCalc('${f.id}','${f.l}')">+</button></div>${note}</div>`;
     }
 
     function openCalc(id,t) { 
         activeField=id; 
         document.getElementById('modalTitle').innerText=t; 
         document.getElementById('calcModal').style.display='flex'; 
-        
         if(!dataStore[activeField] || dataStore[activeField].length === 0) {
             dataStore[activeField] = [0];
         }
-        
         renderCalcRows(); 
         updateModalTotal(); 
     }
@@ -311,17 +325,43 @@
     function addCalcRow() { if(!dataStore[activeField]) dataStore[activeField]=[]; dataStore[activeField].push(0); renderCalcRows(); }
     function removeRow(i) { dataStore[activeField].splice(i,1); renderCalcRows(); updateModalTotal(); }
     function updateModalTotal() { let t=0; document.querySelectorAll('.calc-input').forEach(i=>t+=getCleanNumber(i.value)); document.getElementById('modalTotal').innerText="Rp "+t.toLocaleString('id-ID'); }
-    function saveCalculator() { updateModalTotal(); let t=dataStore[activeField].reduce((a,b)=>a+b,0); document.getElementById('view_'+activeField).value="Rp "+t.toLocaleString('id-ID'); if(document.getElementById('h_'+activeField)) document.getElementById('h_'+activeField).value=t; document.getElementById('calcModal').style.display='none'; hitungGlobal(); }
+    
+    function saveCalculator() { 
+        const listAuto = ['setor_sore','setor_malam','setor_pagi'];
+        let hasError = false;
+        
+        if(listAuto.includes(activeField)) {
+            let inputs = document.querySelectorAll('.calc-input');
+            inputs.forEach(el => {
+                let v = getCleanNumber(el.value);
+                if(v > 0 && v % 50000 !== 0) hasError = true;
+            });
+        }
+
+        if(hasError) {
+            showAlert("⚠️ SALAH INPUT", "Nominal setoran tunai harus kelipatan Rp 50.000 (Uang Biru).");
+            return;
+        }
+
+        updateModalTotal(); 
+        let t=dataStore[activeField].reduce((a,b)=>a+b,0); 
+        document.getElementById('view_'+activeField).value="Rp "+t.toLocaleString('id-ID'); 
+        if(document.getElementById('h_'+activeField)) document.getElementById('h_'+activeField).value=t; 
+        document.getElementById('calcModal').style.display='none'; 
+        hitungGlobal(); 
+    }
     
     function handleBlur(el) { 
         let val = getCleanNumber(el.value);
         const listAuto = ['setor_sore','setor_malam','setor_pagi'];
-        if(listAuto.includes(activeField) && val > 0 && val < 10000) { val = val * 1000; el.value = val.toLocaleString('id-ID'); }
-        if(listAuto.includes(activeField) && val > 0 && val % 50000 !== 0) { showAlert("⚠️ INPUT SALAH!", "Struk ATM harus kelipatan Rp 50.000"); el.value=""; }
+        if(listAuto.includes(activeField) && val > 0 && val < 1000) { 
+            val = val * 1000; 
+            el.value = val.toLocaleString('id-ID'); 
+        }
         updateModalTotal();
         dataStore[activeField]=Array.from(document.querySelectorAll('.calc-input')).map(i=>getCleanNumber(i.value));
     }
-    
+	
     function hitungGlobal() {
         let sales=getCleanNumber(document.getElementById('total_sales').value);
         let fisik=0; ['setor_sore','setor_malam','setor_pagi','ekor_sales'].forEach(k=>fisik+=Number(dataStore[k]?dataStore[k].reduce((a,b)=>a+b,0):0));
@@ -336,7 +376,7 @@
         
         if(sales === 0) {
             el.innerHTML="📝 PENGISIAN DATA"; el.className="status-box status-draft";
-            btn.className="btn-action bg-blue"; btn.innerHTML="⚠️ ISI SALES DULU";
+            btn.className="btn-action bg-blue"; btn.innerHTML="⚠️ ISI TOTAL SALES DULU";
         } else if(sel===0) { 
             el.innerHTML="✅ BALANCE (PAS)"; el.className="status-box status-ok"; 
             btn.className="btn-action bg-green"; btn.innerHTML="💾 SIMPAN DATABASE (BALANCE)";
@@ -352,7 +392,7 @@
 
     function trySubmitForm() {
         let sales = getCleanNumber(document.getElementById('total_sales').value);
-        if(sales === 0) return showAlert("Gagal", "Isi TOTAL SALES dulu!");
+        if(sales === 0) return showAlert("Gagal", "Isi TOTAL SALES dulu!"); 
 
         let selisih = Number(document.getElementById('val_selisih').value);
         if(selisih < 0) {
@@ -411,9 +451,28 @@
 
     function kirimWA() {
         let tgl = document.getElementById('tgl').value.split('-');
-        let sel = Number(document.getElementById('val_selisih').value);
-        let stat = sel===0?"BALANCE OK ✅":(sel>0?`LEBIH (+) Rp ${sel.toLocaleString('id-ID')}`:`KURANG (-) Rp ${Math.abs(sel).toLocaleString('id-ID')}`);
-        let txt = `*LAPORAN SETOR SALES*\n*${currentStoreCode} - ${document.getElementById('nama_toko').value}*\nTgl: ${tgl[2]}-${tgl[1]}-${tgl[0]}\nTotal Sales: Rp ${document.getElementById('total_sales').value}\n\n*STATUS: ${stat}*\nSelisih: Rp ${sel.toLocaleString('id-ID')}\n\nPengirim: ${document.getElementById('nomor_pengirim').value}`;
+        let tglIndo = `${tgl[2]}-${tgl[1]}-${tgl[0]}`;
+        let kode = currentStoreCode;
+        let nama = document.getElementById('nama_toko').value;
+        
+        let getVal = (id) => (dataStore[id] ? dataStore[id].reduce((a,b)=>a+b,0) : 0).toLocaleString('id-ID');
+        let getNum = (id) => (dataStore[id] ? dataStore[id].reduce((a,b)=>a+b,0) : 0);
+
+        let ekorTxt = getVal('ekor_sales');
+        if(document.getElementById('val_nama_ekor').value) ekorTxt += ` (a.n ${document.getElementById('val_nama_ekor').value})`;
+
+        let potongTxt = "";
+        if(getNum('pot_ba') > 0) potongTxt += `\n1. BA Var: ${getVal('pot_ba')}`;
+        if(getNum('pot_lebih') > 0) {
+            let isTertelan = document.getElementById('check_tertelan').checked;
+            let labelPot = isTertelan ? "Tertelan" : "Lebih";
+            potongTxt += `\n2. ${labelPot}: ${getVal('pot_lebih')}`;
+        }
+        if(getNum('pot_virtual') > 0) potongTxt += `\n3. Virtual: ${getVal('pot_virtual')}`;
+        if(potongTxt === "") potongTxt = "\n(Tidak ada)";
+
+        let txt = `*LAPORAN SETOR SALES*\n*${kode} - ${nama}*\n*Tgl Sales:* ${tglIndo}\n*Total Sales:* Rp ${document.getElementById('total_sales').value}\n------------------\n*Fisik Setor:*\n1. Sore: ${getVal('setor_sore')}\n2. Malam: ${getVal('setor_malam')}\n3. Pagi: ${getVal('setor_pagi')}\n4. Ekor: ${ekorTxt}\n------------------ (+)\n*Total Setor: ${document.getElementById('disp_total_fisik').innerText}*\n\n*Potongan:*${potongTxt}\n------------------ (+)\n*Total Potongan: ${document.getElementById('disp_total_potong').innerText}*\n\n*SELISIH AKHIR:*\n*Rp ${Number(document.getElementById('val_selisih').value).toLocaleString('id-ID')}*\n\nPengirim: ${document.getElementById('nomor_pengirim').value}`;
+        
         window.open(`https://wa.me/6285183347653?text=${encodeURIComponent(txt)}`, '_blank');
     }
 
