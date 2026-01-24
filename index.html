@@ -557,9 +557,9 @@
 				if (error || !shop) throw new Error("Toko tidak ditemukan");
 
 				if (isSilent) {
-					document.getElementById('displayNama').innerText = shop.nama;
-					document.getElementById('nama_toko').value = shop.nama;
-					localStorage.setItem('shop_cache_' + code, shop.nama);
+					document.getElementById('displayNama').innerText = shop.nama_toko;
+					document.getElementById('nama_toko').value = shop.nama_toko;
+					localStorage.setItem('shop_cache_' + code, shop.nama_toko);
 					return;
 				}
 				if (bypassGPS) {
