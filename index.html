@@ -961,6 +961,10 @@
 		btn.disabled = true;
 		btn.innerText = "⏳ Menyimpan...";
 
+const totalPotongan = cleanNumber(document.getElementById('h_pot_ba').value)
+                    + cleanNumber(document.getElementById('h_pot_lebih').value)
+                    + cleanNumber(document.getElementById('h_pot_virtual').value);
+
 const dataFinal = {
     kode_toko: currentStoreCode,
     tanggal_sales: document.getElementById('tgl').value,
@@ -971,18 +975,19 @@ const dataFinal = {
     setor_malam: cleanNumber(document.getElementById('h_setor_malam').value),
     setor_pagi: cleanNumber(document.getElementById('h_setor_pagi').value),
     ekor_sales: cleanNumber(document.getElementById('h_ekor_sales').value),
-
     total_setor: cleanNumber(document.getElementById('h_total_fisik').value),
 
     pot_ba: cleanNumber(document.getElementById('h_pot_ba').value),
     pot_lebih: cleanNumber(document.getElementById('h_pot_lebih').value),
     pot_virtual: cleanNumber(document.getElementById('h_pot_virtual').value),
+    total_potongan: totalPotongan,
 
     ekor_note: document.getElementById('val_nama_ekor').value || "",
     raw_rincian: dataStore,
     pengirim: document.getElementById('nomor_pengirim').value || "",
     updated_at: new Date().toISOString()
 };
+
 
 
 
