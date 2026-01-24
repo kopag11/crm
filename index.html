@@ -981,7 +981,7 @@ const dataFinal = {
 
     const { error } = await sb
         .from('sales_final')
-        ..insert(dataFinal);
+        .insert(dataFinal);
 
     if (error) {
         status.innerText = "❌ Gagal simpan";
@@ -1034,5 +1034,6 @@ const dataFinal = {
 </script>
 </body>
 </html>
+
 
 
