@@ -753,7 +753,8 @@
 
 
 		currentLoadedDate = data.tanggal_sales;
-		document.getElementById('total_sales').value = data.total_sales || '';
+		let ts = data.total_sales || 0;
+        document.getElementById('total_sales').value = formatNumberDisplay(ts);
 		document.getElementById('val_nama_ekor').value = data.ekor_note || '';
 		dataStore = data.data_store || {};
 
@@ -817,7 +818,7 @@
 			if (!dataStore[f.id]) dataStore[f.id] = [];
 			let ekorVal = document.getElementById('val_nama_ekor') ? document.getElementById('val_nama_ekor').value : '';
 			let noteInput = f.hasNote 
-				? `<input type="text" id="note_ekor" placeholder="Ket. Ekor (Misal: BCA Budi)" value="${ekorVal}" oninput="document.getElementById('val_nama_ekor').value=this.value; autoSaveDraft();" style="margin-top:10px; border:1px dashed #cbd5e1; background: #f8fafc;">` 
+				? `<input type="text" id="note_ekor" placeholder="Ket. Ekor (Misal: BCA nama anda)" value="${ekorVal}" oninput="document.getElementById('val_nama_ekor').value=this.value; autoSaveDraft();" style="margin-top:10px; border:1px dashed #cbd5e1; background: #f8fafc;">` 
 				: '';
 			let infoHtml = f.desc ? `<span class="info-btn" onclick="showAlert('Informasi', '${f.desc}')">i</span>` : '';
 			let checkboxHtml = '';
@@ -1010,7 +1011,7 @@ const dataFinal = {
 
 		const { error } = await sb
 			.from('sales_final')
-			.insert(dataFinal);
+			  .upsert(dataFinal, { onConflict: ['kode_toko', 'tanggal_sales'] });
 
 		if (error) {
 			status.innerText = "❌ Gagal simpan";
@@ -1051,7 +1052,8 @@ const dataFinal = {
 			}
 			if(getNum('pot_virtual') > 0) potongTxt += `\n3. Virtual: ${getVal('pot_virtual')}`;
 			if(potongTxt === "") potongTxt = "\n(Tidak ada)";
-			let txt = `*LAPORAN SETOR SALES*\n*${kode} - ${nama}*\n*Tgl Sales:* ${tglIndo}\n*Total Sales:* Rp ${document.getElementById('total_sales').value}\n------------------\n*Fisik Setor:*\n1. Sore: ${getVal('setor_sore')}\n2. Malam: ${getVal('setor_malam')}\n3. Pagi: ${getVal('setor_pagi')}\n4. Ekor: ${ekorTxt}\n------------------ (+)\n*Total Setor: ${document.getElementById('disp_total_fisik').innerText}*\n\n*Potongan:*${potongTxt}\n------------------ (+)\n*Total Potong: ${document.getElementById('disp_total_potong').innerText}*\n\n------------------\n*${statusTxt}*\n\n👤 *Pengirim:* ${pengirim}\n\nNote : untuk bukti ekor dan bukti potong email dilampirkan`;
+			let totalSalesWA = formatNumberDisplay(cleanNumber(document.getElementById('total_sales').value));
+			let txt = `*LAPORAN SETOR SALES*\n*${kode} - ${nama}*\n*Tgl Sales:* ${tglIndo}\n*Total Sales:* Rp ${totalSalesWA}\n------------------\n*Fisik Setor:*\n1. Sore: ${getVal('setor_sore')}\n2. Malam: ${getVal('setor_malam')}\n3. Pagi: ${getVal('setor_pagi')}\n4. Ekor: ${ekorTxt}\n------------------ (+)\n*Total Setor: ${document.getElementById('disp_total_fisik').innerText}*\n\n*Potongan:*${potongTxt}\n------------------ (+)\n*Total Potong: ${document.getElementById('disp_total_potong').innerText}*\n\n------------------\n*${statusTxt}*\n\n👤 *Pengirim:* ${pengirim}\n\nNote : untuk bukti ekor dan bukti potong email dilampirkan`;
 			window.open(`https://wa.me/6285183347653?text=${encodeURIComponent(txt)}`, '_blank');
 			setTimeout(() => logout(), 1000); 
 		}
@@ -1059,10 +1061,14 @@ const dataFinal = {
 	  if(val === "" || val === null || val === undefined) return 0;
 	  return parseInt(val.toString().replace(/\D/g,'')) || 0;
 	}
+function formatNumberDisplay(num) {
+    return (Number(num) || 0).toLocaleString('id-ID');
+}
 
 	</script>
 	</body>
 	</html>
+
 
 
 
