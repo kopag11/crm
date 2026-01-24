@@ -954,6 +954,26 @@
 			else msg = "✅ Data BALANCE (PAS).\n\nSimpan laporan final?";
 			showConfirm("Konfirmasi Laporan", msg, false, function() { processSubmit(); });
 		}
+async function simpanSetoranRawBatch(kode_toko, tanggal_sales, waktu_setor, arrNominal) {
+  if (!arrNominal || !arrNominal.length) return;
+
+  const rows = arrNominal
+    .filter(n => n && n > 0)
+    .map(n => ({
+      kode_toko,
+      tanggal_sales,
+      waktu_setor,
+      nominal: n,
+      sumber: 'HTML2',
+      created_at: new Date().toISOString()
+    }));
+
+  if (rows.length === 0) return;
+
+  const { error } = await sb.from('setoran_raw').insert(rows);
+  if (error) console.error("Gagal simpan batch setoran_raw:", error.message);
+}
+
 
 		async function processSubmit() {
 		const btn = document.getElementById('btn-submit');
@@ -1011,7 +1031,13 @@ const dataFinal = {
 
 		const { error } = await sb
 			.from('sales_final')
-			  .upsert(dataFinal, { onConflict: ['kode_toko', 'tanggal_sales'] });
+			.upsert(dataFinal, { onConflict: ['kode_toko', 'tanggal_sales'] });
+await simpanSetoranRawBatch(dataFinal.kode_toko, dataFinal.tanggal_sales, 'Sore', dataStore['setor_sore']);
+await simpanSetoranRawBatch(dataFinal.kode_toko, dataFinal.tanggal_sales, 'Malam', dataStore['setor_malam']);
+await simpanSetoranRawBatch(dataFinal.kode_toko, dataFinal.tanggal_sales, 'Pagi', dataStore['setor_pagi']);
+await simpanSetoranRawBatch(dataFinal.kode_toko, dataFinal.tanggal_sales, 'Ekor', dataStore['ekor_sales']);
+
+
 
 		if (error) {
 			status.innerText = "❌ Gagal simpan";
@@ -1068,7 +1094,6 @@ function formatNumberDisplay(num) {
 	</script>
 	</body>
 	</html>
-
 
 
 
