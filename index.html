@@ -960,27 +960,28 @@ async function confirmDeleteDraft() {
     btn.disabled = true;
     btn.innerText = "⏳ Menyimpan...";
 
-    const dataFinal = {
-        kode_toko: currentStoreCode,
-        tanggal_sales: document.getElementById('tgl').value,
-        nama_toko: document.getElementById('nama_toko').value,
-        total_sales: getCleanNumber(document.getElementById('total_sales').value),
-        setor_sore: document.getElementById('h_setor_sore').value,
-        setor_malam: document.getElementById('h_setor_malam').value,
-        setor_pagi: document.getElementById('h_setor_pagi').value,
-        ekor_sales: document.getElementById('h_ekor_sales').value,
-        pot_ba: document.getElementById('h_pot_ba').value,
-        pot_lebih: document.getElementById('h_pot_lebih').value,
-        pot_virtual: document.getElementById('h_pot_virtual').value,
-        ekor_note: document.getElementById('val_nama_ekor').value,
-        raw_rincian: dataStore,
-        pengirim: document.getElementById('nomor_pengirim').value,
-        updated_at: new Date().toISOString()
-    };
+const dataFinal = {
+    kode_toko: currentStoreCode,
+    tanggal_sales: document.getElementById('tgl').value,
+    nama_toko: document.getElementById('nama_toko').value,
+    total_sales: cleanNumber(document.getElementById('total_sales').value),
+    setor_sore: cleanNumber(document.getElementById('h_setor_sore').value),
+    setor_malam: cleanNumber(document.getElementById('h_setor_malam').value),
+    setor_pagi: cleanNumber(document.getElementById('h_setor_pagi').value),
+    ekor_sales: cleanNumber(document.getElementById('h_ekor_sales').value),
+    pot_ba: cleanNumber(document.getElementById('h_pot_ba').value),
+    pot_lebih: cleanNumber(document.getElementById('h_pot_lebih').value),
+    pot_virtual: cleanNumber(document.getElementById('h_pot_virtual').value),
+    ekor_note: document.getElementById('val_nama_ekor').value,
+    raw_rincian: dataStore,
+    pengirim: document.getElementById('nomor_pengirim').value,
+    updated_at: new Date().toISOString()
+};
+
 
     const { error } = await sb
         .from('sales_final')
-        .upsert(dataFinal, { onConflict: ['kode_toko','tanggal_sales'] });
+        ..insert(dataFinal);
 
     if (error) {
         status.innerText = "❌ Gagal simpan";
@@ -1025,6 +1026,11 @@ async function confirmDeleteDraft() {
         window.open(`https://wa.me/6285183347653?text=${encodeURIComponent(txt)}`, '_blank');
         setTimeout(() => logout(), 1000); 
     }
+	function cleanNumber(val){
+  if(val === "" || val === null || val === undefined) return 0;
+  return parseInt(val.toString().replace(/\D/g,'')) || 0;
+}
+
 </script>
 </body>
 </html>
