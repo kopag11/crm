@@ -965,6 +965,8 @@ const totalPotongan = cleanNumber(document.getElementById('h_pot_ba').value)
                     + cleanNumber(document.getElementById('h_pot_lebih').value)
                     + cleanNumber(document.getElementById('h_pot_virtual').value);
 
+const selisih = Number(document.getElementById('val_selisih').value) || 0;
+
 const dataFinal = {
     kode_toko: currentStoreCode,
     tanggal_sales: document.getElementById('tgl').value,
@@ -982,11 +984,14 @@ const dataFinal = {
     pot_virtual: cleanNumber(document.getElementById('h_pot_virtual').value),
     total_potongan: totalPotongan,
 
+    selisih: selisih,
+
     ekor_note: document.getElementById('val_nama_ekor').value || "",
     raw_rincian: dataStore,
     pengirim: document.getElementById('nomor_pengirim').value || "",
     updated_at: new Date().toISOString()
 };
+
 
 
 
