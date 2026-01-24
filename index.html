@@ -964,7 +964,8 @@ async function simpanSetoranRawBatch(kode_toko, tanggal_sales, waktu_setor, arrN
       tanggal_sales,
       waktu_setor,
       nominal: n,
-      sumber: 'HTML2',
+      sumber: 'CRMOS',
+      status_rekon: 'BELUM',
       created_at: new Date().toISOString()
     }));
 
@@ -972,6 +973,7 @@ async function simpanSetoranRawBatch(kode_toko, tanggal_sales, waktu_setor, arrN
 
   const { error } = await sb.from('setoran_raw').insert(rows);
   if (error) console.error("Gagal simpan batch setoran_raw:", error.message);
+}
 }
 
 
@@ -1094,6 +1096,7 @@ function formatNumberDisplay(num) {
 	</script>
 	</body>
 	</html>
+
 
 
 
