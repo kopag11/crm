@@ -967,6 +967,17 @@ const totalPotongan = cleanNumber(document.getElementById('h_pot_ba').value)
 
 const selisih = Number(document.getElementById('val_selisih').value) || 0;
 
+let statusLaporan = "";
+if (selisih === 0) {
+    statusLaporan = "BALANCE";
+} else if (selisih > 0) {
+    statusLaporan = "LEBIH";
+} else {
+    statusLaporan = "KURANG";
+}
+
+			
+
 const dataFinal = {
     kode_toko: currentStoreCode,
     tanggal_sales: document.getElementById('tgl').value,
@@ -985,6 +996,7 @@ const dataFinal = {
     total_potongan: totalPotongan,
 
     selisih: selisih,
+    status: statusLaporan,
 
     ekor_note: document.getElementById('val_nama_ekor').value || "",
     raw_rincian: dataStore,
@@ -1051,5 +1063,6 @@ const dataFinal = {
 	</script>
 	</body>
 	</html>
+
 
 
