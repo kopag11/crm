@@ -974,7 +974,7 @@ async function simpanSetoranRawBatch(kode_toko, tanggal_sales, waktu_setor, arrN
   const { error } = await sb.from('setoran_raw').insert(rows);
   if (error) console.error("Gagal simpan batch setoran_raw:", error.message);
 }
-}
+
 
 
 		async function processSubmit() {
@@ -1096,6 +1096,7 @@ function formatNumberDisplay(num) {
 	</script>
 	</body>
 	</html>
+
 
 
 
